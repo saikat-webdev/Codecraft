@@ -1,0 +1,55 @@
+# Root ignore for the monorepo
+
+# Environment files
+.env
+.env.*
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# IDE/editor directories
+.vscode/
+.idea/
+.fleet/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# PHP / Laravel
+/vendor/
+/.phpunit.cache
+/.phpactor.json
+Homestead.json
+Homestead.yaml
+/public/build/
+/public/hot/
+/public/storage/
+/storage/*.key
+/storage/pail
+
+# Node / frontend
+/node_modules/
+/dist/
+/dist-ssr/
+*.local
+
+# Backend specific
+/backend/vendor/
+/backend/node_modules/
+/backend/public/build/
+/backend/public/hot/
+/backend/public/storage/
+/backend/storage/*.key
+/backend/storage/pail
+/backend/.phpunit.cache
+
+# Frontend specific
+/frontend/node_modules/
+/frontend/dist/
+/frontend/dist-ssr/
+/frontend/*.local
