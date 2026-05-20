@@ -11,13 +11,18 @@ class LessonController extends BaseApiController
 {
     public function index(): JsonResponse
     {
-        $lessons = Lesson::orderBy('created_at', 'desc')->paginate(20);
+        $lessons = Lesson::with('module')
+            ->orderBy('module_id')
+            ->orderBy('order')
+            ->get();
 
         return $this->success(LessonResource::collection($lessons), 'Lessons retrieved');
     }
 
     public function show(Lesson $lesson): JsonResponse
     {
+        $lesson->load('module');
+
         return $this->success(new LessonResource($lesson), 'Lesson retrieved');
     }
 

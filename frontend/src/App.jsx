@@ -5,8 +5,11 @@ import BrandLogo from './components/BrandLogo';
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Roadmap from './pages/Roadmap';
+import ModulePage from './pages/ModulePage';
 import Lessons from './pages/Lessons';
 import LessonPage from './pages/Lesson';
+// import AiInstructor from './pages/AiInstructor';
 import './index.css';
 
 function App() {
@@ -18,7 +21,9 @@ function App() {
             <div className="container">
               <BrandLogo />
               <nav>
+                <Link to="/modules">Roadmap</Link>
                 <Link to="/lessons">Lessons</Link>
+                {/* <Link to="/ai">AI Mentor</Link> */}
                 <Link to="/dashboard">Dashboard</Link>
                 <Link to="/login">Login</Link>
               </nav>
@@ -30,52 +35,155 @@ function App() {
               <Route
                 path="/"
                 element={
-                  <section className="hero-panel hero-grid">
-                    <div className="hero-content">
-                      <span className="eyebrow">Your coding mentor</span>
-                      <h1>Learn code with a friendly instructor by your side.</h1>
-                      <p>CodeCraft turns every lesson into a playful learning lab with instant coaching, bright feedback, and beginner-first projects.</p>
-                      <div className="hero-actions">
-                        <Link to="/register" className="button-primary">Join the lab</Link>
-                        <Link to="/lessons" className="button-secondary">See lessons</Link>
-                      </div>
-
-                      <div className="hero-features">
-                        <div className="feature-chip">Live-style guidance</div>
-                        <div className="feature-chip">Project-based learning</div>
-                        <div className="feature-chip">Built for beginners</div>
-                      </div>
-                    </div>
-
-                    <div className="hero-console-wrap">
-                      <div className="hero-console">
-                        <div className="console-header">
-                          <span className="console-dot red" />
-                          <span className="console-dot yellow" />
-                          <span className="console-dot green" />
-                          <span className="console-title">CodeCraft console</span>
+                  <div className="home-page">
+                    <section className="hero-panel hero-grid fade-up">
+                      <div className="hero-content">
+                        <span className="eyebrow">Your coding mentor</span>
+                        <h1>Learn Python with a friendly instructor by your side.</h1>
+                        <p>CodeCraft turns every lesson into a playful learning lab with instant guidance, bright feedback, and beginner-first projects.</p>
+                        <div className="hero-actions">
+                          <Link to="/register" className="button-primary">Join the lab</Link>
+                          {/* <Link to="/ai" className="button-secondary">Meet your AI mentor</Link> */}
                         </div>
-                        <pre className="console-code">
-                          <code>
-                            <span className="console-line"><span className="console-keyword">const</span> guide = &#123; name: <span className="console-string">'CodeCraft'</span>, style: <span className="console-string">'friendly'</span> &#125;;</span>
-                            <span className="console-line"><span className="console-keyword">const</span> practice = [<span className="console-string">'learn'</span>, <span className="console-string">'build'</span>, <span className="console-string">'repeat'</span>];</span>
-                            <span className="console-line console-comment">// your assistant guides every step</span>
-                            <span className="console-line console-highlight"><span className="console-keyword">console</span>.log(<span className="console-string">'Welcome to the code lab!'</span>);</span>
-                          </code>
-                        </pre>
+
+                        <div className="hero-features">
+                          <div className="feature-chip">Python Promise course</div>
+                          <div className="feature-chip">Fast, daily routines</div>
+                          <div className="feature-chip">Project-powered learning</div>
+                        </div>
                       </div>
 
-                      <div className="assistant-card">
-                        <strong>Assistant:</strong> Start with a short lesson, then build a real mini project in the next step.
+                      <div className="hero-console-wrap">
+                        <div className="hero-console code-panel">
+                          <div className="console-header">
+                            <span className="console-dot red" />
+                            <span className="console-dot yellow" />
+                            <span className="console-dot green" />
+                            <span className="console-title">Live learning terminal</span>
+                          </div>
+                          <pre className="console-code">
+                            <code>
+                              <span className="console-line animate-line delay-0"><span className="console-keyword">def</span> greet(name):</span>
+                              <span className="console-line animate-line delay-1">  message = f"Hello, {name}!"</span>
+                              <span className="console-line animate-line delay-2">  return message</span>
+                              <span className="console-line animate-line delay-3 console-comment"># Run the lesson code and watch your skills grow</span>
+                              <span className="console-line animate-line delay-4 console-highlight">print(greet('Learner'))</span>
+                            </code>
+                          </pre>
+                        </div>
+
+                        <div className="assistant-card glow-panel">
+                          <strong>Studio tip:</strong> Practice every day and the code will start to feel like second nature.
+                        </div>
                       </div>
-                    </div>
-                  </section>
+                    </section>
+
+                    <section className="page-card insight-panel fade-up delay-1">
+                      <div className="section-title">
+                        <h2>Why CodeCraft works</h2>
+                        <p className="section-subtitle">Every part of the experience is designed for beginners who want fast wins and steady momentum.</p>
+                      </div>
+                      <div className="feature-grid">
+                        <article className="feature-card">
+                          <strong>Step-by-step lessons</strong>
+                          <p>Each lesson builds on the last with clear examples and no jargon.</p>
+                        </article>
+                        <article className="feature-card">
+                          <strong>Practice-first projects</strong>
+                          <p>Apply new skills immediately with mini projects that feel like real code.</p>
+                        </article>
+                        <article className="feature-card">
+                          <strong>Real progress tracking</strong>
+                          <p>See your completed lessons, streaks, and next step right in the dashboard.</p>
+                        </article>
+                      </div>
+                    </section>
+
+                    <section className="page-card code-stage fade-up delay-2">
+                      <div className="section-title">
+                        <h2>Live coding flow</h2>
+                        <p className="section-subtitle">Watch the learning path animate with color, motion, and a studio-style code preview.</p>
+                      </div>
+                      <div className="code-grid">
+                        <div className="code-visual">
+                          <div className="code-window">
+                            <div className="code-toolbar">
+                              <span className="toolbar-dot red" />
+                              <span className="toolbar-dot yellow" />
+                              <span className="toolbar-dot green" />
+                            </div>
+                            <div className="code-body">
+                              <div className="code-line shimmer">from codecraft import beginner_path</div>
+                              <div className="code-line shimmer delay-1">lesson = beginner_path.start()</div>
+                              <div className="code-line shimmer delay-2">lesson.explain('variables')</div>
+                              <div className="code-line shimmer delay-3">lesson.practice('write your first function')</div>
+                              <div className="code-line shimmer delay-4">lesson.complete()</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="code-copy">
+                          <h3>Learn by doing</h3>
+                          <p>Follow a guided learning flow with friendly explanations, handy feedback, and small wins on every step.</p>
+                          <div className="stat-row">
+                            <span>20+ lessons</span>
+                            <span>3 guided projects</span>
+                            <span>60m daily challenge</span>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section className="page-card powered-panel fade-up delay-3">
+                      <div className="section-title">
+                        <h2>Build confidence in every session</h2>
+                        <p className="section-subtitle">Short sprints, bite-sized practice, and progress that feels visible from the first day.</p>
+                      </div>
+                      <div className="stats-grid">
+                        <article className="stat-card">
+                          <span className="stat-number">92%</span>
+                          <p>Beginner-friendly clarity</p>
+                        </article>
+                        <article className="stat-card">
+                          <span className="stat-number">4.7/5</span>
+                          <p>Student satisfaction rating</p>
+                        </article>
+                        <article className="stat-card">
+                          <span className="stat-number">Next</span>
+                          <p>Take your next lesson and keep momentum going.</p>
+                        </article>
+                      </div>
+                    </section>
+
+                    <section className="page-card journey-panel fade-up delay-4">
+                      <div className="section-title">
+                        <h2>From first script to actual project</h2>
+                        <p className="section-subtitle">Follow a supportive roadmap with clear next steps, progress milestones, and build-ready exercises.</p>
+                      </div>
+                      <div className="journey-grid">
+                        <article className="journey-card">
+                          <strong>Start strong</strong>
+                          <p>Easy first lessons that teach Python fundamentals with friendly explanations.</p>
+                        </article>
+                        <article className="journey-card">
+                          <strong>Build fast</strong>
+                          <p>Practice functions, loops, and data with mini apps that feel rewarding.</p>
+                        </article>
+                        <article className="journey-card">
+                          <strong>Ship your work</strong>
+                          <p>Finish a simple capstone project and see your progress reflected in the dashboard.</p>
+                        </article>
+                      </div>
+                    </section>
+                  </div>
                 }
               />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/modules" element={<Roadmap />} />
+              <Route path="/modules/:slug" element={<ModulePage />} />
               <Route path="/lessons" element={<Lessons />} />
               <Route path="/lessons/:slug" element={<LessonPage />} />
+              {/* <Route path="/ai" element={<ProtectedRoute><AiInstructor /></ProtectedRoute>} /> */}
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             </Routes>
           </main>

@@ -10,13 +10,26 @@ class Lesson extends Model
     use HasFactory;
 
     protected $fillable = [
+        'module_id',
         'title',
         'slug',
         'description',
         'content',
         'difficulty',
+        'estimated_minutes',
+        'order',
         'language',
     ];
+
+    protected $casts = [
+        'estimated_minutes' => 'integer',
+        'order' => 'integer',
+    ];
+
+    public function module()
+    {
+        return $this->belongsTo(Module::class);
+    }
 
     public function progress()
     {

@@ -15,6 +15,9 @@ class ProgressResource extends JsonResource
             'completed' => $this->completed,
             'score' => $this->score,
             'completed_at' => $this->completed_at?->toDateTimeString(),
+            'lesson' => $this->whenLoaded('lesson', function () {
+                return new LessonSummaryResource($this->lesson);
+            }),
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
