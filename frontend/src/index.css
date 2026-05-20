@@ -1334,17 +1334,231 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .hero-features {
-    grid-template-columns: 1fr;
-  }
+.hero-features {
+     grid-template-columns: 1fr;
+   }
 }
 
 @keyframes floatUp {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
+   0%, 100% { transform: translateY(0); }
+   50% { transform: translateY(-6px); }
+ }
 
 @keyframes glowPulse {
-  0%, 100% { opacity: 0.88; }
-  50% { opacity: 1; }
+   0%, 100% { opacity: 0.88; }
+   50% { opacity: 1; }
+ }
+
+/* Coding Playground Styles */
+.coding-playground {
+  margin-top: 2rem;
+  border-top: 1px solid rgba(56, 189, 248, 0.12);
+  padding-top: 1.5rem;
+ }
+
+.playground-header h3 {
+  margin: 0 0 0.5rem;
+  color: #f8fafc;
+ }
+
+.exercise-description {
+  color: var(--muted);
+  margin-bottom: 1rem;
+ }
+
+.playground-editor {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  margin-bottom: 1rem;
+ }
+
+.playground-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+ }
+
+.console-panel {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  background: rgba(8, 15, 39, 0.95);
+  margin-bottom: 1rem;
+ }
+
+.console-header {
+  background: rgba(10, 17, 51, 0.9);
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.12);
+ }
+
+.console-header span {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  font-weight: 600;
+ }
+
+.console-output {
+  margin: 0;
+  padding: 1rem;
+  color: #a5f3fc;
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  min-height: 80px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+ }
+
+.console-output.error {
+  color: #fecaca;
+ }
+
+.ai-feedback-panel {
+  border-radius: 16px;
+  padding: 1rem;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  margin-bottom: 1rem;
+ }
+
+.ai-feedback-panel h4 {
+  margin: 0 0 0.5rem;
+  color: #7dd3fc;
+  font-size: 0.9rem;
+ }
+
+.ai-feedback-panel p {
+  margin: 0;
+  color: #dbeafe;
+ }
+
+.hints-panel {
+  border-radius: 16px;
+  padding: 1rem;
+  background: rgba(251, 113, 143, 0.08);
+  border: 1px solid rgba(251, 113, 143, 0.16);
+  margin-bottom: 1rem;
+ }
+
+.hints-panel h4 {
+  margin: 0 0 0.5rem;
+  color: #fda4af;
+  font-size: 0.9rem;
+ }
+
+.hints-panel p {
+  margin: 0 0 0.75rem;
+  color: #fecaca;
+ }
+
+.hint-navigation {
+  display: flex;
+  gap: 0.5rem;
+ }
+
+.hint-navigation button {
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+ }
+
+.exercises-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(56, 189, 248, 0.12);
+ }
+
+.exercises-section h2 {
+  margin: 0 0 1rem;
+  color: #f8fafc;
+ }
+
+.exercises-list {
+  display: grid;
+  gap: 1rem;
+ }
+
+.exercise-accordion {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+ }
+
+.exercise-summary {
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #e2e8f0;
+  font-weight: 600;
+ }
+
+.exercise-summary:hover {
+  background: rgba(255, 255, 255, 0.04);
+ }
+
+.difficulty-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+ }
+
+.difficulty-badge.beginner {
+  background: rgba(52, 211, 153, 0.16);
+  color: #a7f3d0;
+ }
+
+.difficulty-badge.intermediate {
+  background: rgba(251, 191, 36, 0.16);
+  color: #fde68a;
+ }
+
+.difficulty-badge.advanced {
+  background: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
+ }
+
+/* Compact sidebar playground */
+.sidebar-playground {
+  margin-top: 0;
+  border-top: none;
+  padding-top: 0;
+}
+
+.sidebar-editor {
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-actions {
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-actions button {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem !important;
+}
+
+.sidebar-console {
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-feedback {
+  padding: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.sidebar-feedback h4 {
+  margin: 0 0 0.25rem;
+  font-size: 0.75rem;
 }

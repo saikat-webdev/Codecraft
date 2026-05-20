@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthProvider';
 import { fetchLesson, fetchModule, fetchProgress, submitProgress } from '../services/learning';
+import CodingPlayground from '../components/CodingPlayground';
 
 export default function LessonPage() {
   const { slug } = useParams();
@@ -123,16 +124,41 @@ export default function LessonPage() {
         {error && <div className="alert-error">{error}</div>}
       </main>
 
-      <aside className="page-card ai-sidebar-card">
-        <div>
-          <span className="eyebrow">AI Instructor</span>
-          <h2>Lesson support</h2>
-          <p>{helpText}</p>
-        </div>
+      <aside className="page-card code-sidebar-card">
+        {lesson.exercises && lesson.exercises.length > 0 ? (
+          <div className="sidebar-header">
+            <span className="eyebrow">Practice Playground</span>
+            <h2>Try the code</h2>
+          </div>
+        ) : (
+          <div>
+            <span className="eyebrow">AI Instructor</span>
+            <h2>Lesson support</h2>
+            <p>{helpText}</p>
+          </div>
+        )}
 
-        <div className="chat-history lesson-chat">
-          <div className="chat-message assistant">AI chat is disabled for now. Please continue through the lesson content and projects.</div>
-        </div>
+        {lesson.exercises && lesson.exercises.length > 0 ? (
+          <div className="playground-sidebar">
+            {lesson.exercises.slice(0, 1).map((exercise) => (
+              <CodingPlayground 
+                key={exercise.id}
+                exercise={exercise} 
+                onSubmissionComplete={(submission) => {
+                  console.log('Submission:', submission);
+                  if (submission.is_correct) {
+                    alert('Great job! Exercise completed successfully! 🎉');
+                  }
+                }}
+                compact={true}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="chat-history lesson-chat">
+            <div className="chat-message assistant">AI chat is disabled for now. Please continue through the lesson content and projects.</div>
+          </div>
+        )}
       </aside>
     </div>
   );

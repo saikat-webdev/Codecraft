@@ -41,6 +41,11 @@ class Lesson extends Model
         return $this->hasMany(Quiz::class);
     }
 
+    public function exercises()
+    {
+        return $this->hasMany(CodingExercise::class)->orderBy('order');
+    }
+
     public function getRouteKeyName(): string
     {
         return 'slug';

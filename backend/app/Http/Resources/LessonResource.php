@@ -27,6 +27,9 @@ class LessonResource extends JsonResource
                     'order' => $this->module->order,
                 ] : null;
             }),
+            'exercises' => $this->whenLoaded('exercises', function () {
+                return CodingExerciseResource::collection($this->exercises);
+            }),
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),
         ];

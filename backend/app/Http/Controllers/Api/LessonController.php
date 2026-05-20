@@ -21,7 +21,7 @@ class LessonController extends BaseApiController
 
     public function show(Lesson $lesson): JsonResponse
     {
-        $lesson->load('module');
+        $lesson->load(['module', 'exercises']);
 
         return $this->success(new LessonResource($lesson), 'Lesson retrieved');
     }

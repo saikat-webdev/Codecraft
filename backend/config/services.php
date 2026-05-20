@@ -42,4 +42,10 @@ return [
         'endpoint' => env('GEMINI_ENDPOINT'),
     ],
 
+    'judge0' => [
+        'base_url' => env('JUDGE0_BASE_URL', 'https://judge0-ce.p.rapidapi.com'),
+        'api_key' => env('JUDGE0_API_KEY'),
+        'timeout' => env('JUDGE0_TIMEOUT', 30),
+    ],
+
 ];

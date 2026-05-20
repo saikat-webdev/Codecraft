@@ -21,6 +21,11 @@ class ProgressController extends BaseApiController
         $totalLessons = $lessons->count();
         $percentage = $totalLessons ? (int) round(($completedCount / $totalLessons) * 100) : 0;
 
+        $exerciseSubmissions = \App\Models\ExerciseSubmission::where('user_id', $user->id)->get();
+        $completedExercises = $exerciseSubmissions->where('is_correct', true)->count();
+        $totalExercises = \App\Models\CodingExercise::count();
+        $exercisePercentage = $totalExercises ? (int) round(($completedExercises / $totalExercises) * 100) : 0;
+
         $nextLesson = Lesson::whereDoesntHave('progress', function ($query) use ($user) {
             $query->where('user_id', $user->id)->where('completed', true);
         })->orderBy('module_id')->orderBy('order')->first();
@@ -30,6 +35,9 @@ class ProgressController extends BaseApiController
             'progress_percentage' => $percentage,
             'completed_count' => $completedCount,
             'total_lessons' => $totalLessons,
+            'completed_exercises' => $completedExercises,
+            'total_exercises' => $totalExercises,
+            'exercise_percentage' => $exercisePercentage,
             'next_lesson' => $nextLesson ? new LessonSummaryResource($nextLesson) : null,
             'current_module' => $nextLesson ? [
                 'id' => $nextLesson->module?->id,
