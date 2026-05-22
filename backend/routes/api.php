@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\AdminDashboardController;
+use App\Http\Controllers\Api\AdminSettingsController;
 use App\Http\Controllers\Api\AdminSuddenTestController;
+use App\Http\Controllers\Api\AdminUserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CodeEvaluationController;
 use App\Http\Controllers\Api\CodeExecutionController;
@@ -58,6 +61,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('exercises', [ExerciseController::class, 'store']);
 
     Route::middleware('admin')->prefix('admin')->group(function () {
+        // Dashboard
+        Route::get('dashboard/stats', [AdminDashboardController::class, 'stats']);
+        Route::get('dashboard/activity', [AdminDashboardController::class, 'activity']);
+        Route::get('dashboard/leaderboard', [AdminDashboardController::class, 'leaderboard']);
+
+        // Users
+        Route::get('users', [AdminUserController::class, 'index']);
+        Route::get('users/{user}', [AdminUserController::class, 'show']);
+        Route::put('users/{user}', [AdminUserController::class, 'update']);
+        Route::post('users/{user}/suspend', [AdminUserController::class, 'suspend']);
+        Route::post('users/{user}/activate', [AdminUserController::class, 'activate']);
+        Route::post('users/{user}/role', [AdminUserController::class, 'assignRole']);
+
+        // Settings
+        Route::get('settings', [AdminSettingsController::class, 'index']);
+        Route::put('settings', [AdminSettingsController::class, 'update']);
+        Route::put('settings/judge0', [AdminSettingsController::class, 'updateJudge0']);
+
+        // Sudden Tests (existing)
         Route::get('sudden-tests/settings', [AdminSuddenTestController::class, 'settings']);
         Route::put('sudden-tests/settings', [AdminSuddenTestController::class, 'updateSettings']);
         Route::get('sudden-tests/questions', [AdminSuddenTestController::class, 'questions']);

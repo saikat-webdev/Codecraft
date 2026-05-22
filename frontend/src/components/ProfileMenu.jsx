@@ -80,13 +80,22 @@ export default function ProfileMenu() {
             Dashboard
           </Link>
           {user.is_admin && (
-            <Link
-              to="/admin/sudden-tests"
-              className="profile-dropdown-item"
-              onClick={() => setOpen(false)}
-            >
-              Admin · Sudden tests
-            </Link>
+            <>
+              <Link
+                to="/admin"
+                className="profile-dropdown-item"
+                onClick={() => setOpen(false)}
+              >
+                Admin Dashboard
+              </Link>
+              <Link
+                to="/admin/sudden-tests"
+                className="profile-dropdown-item"
+                onClick={() => setOpen(false)}
+              >
+                Sudden Tests
+              </Link>
+            </>
           )}
           <button type="button" className="profile-dropdown-item danger" onClick={handleLogout}>
             Log out

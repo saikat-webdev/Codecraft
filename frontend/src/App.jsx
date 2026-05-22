@@ -12,6 +12,10 @@ import LessonPage from './pages/Lesson';
 import Playground from './pages/Playground';
 import Profile from './pages/Profile';
 import AdminSuddenTests from './pages/AdminSuddenTests';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminUsers from './pages/AdminUsers';
+import AdminSettings from './pages/AdminSettings';
+import AdminActivity from './pages/AdminActivity';
 import ProfileMenu from './components/ProfileMenu';
 import { useTheme } from './context/ThemeProvider';
 import './index.css';
@@ -224,7 +228,11 @@ function App() {
               <Route path="/ai" element={<Navigate to="/playground" replace />} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
               <Route path="/admin/sudden-tests" element={<ProtectedRoute><AdminSuddenTests /></ProtectedRoute>} />
+              <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+              <Route path="/admin/activity" element={<ProtectedRoute><AdminActivity /></ProtectedRoute>} />
             </Routes>
           </main>
         </div>

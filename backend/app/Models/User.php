@@ -23,6 +23,7 @@ class User extends Authenticatable
         'avatar_path',
         'bio',
         'is_admin',
+        'is_suspended',
         'learning_goal',
         'preferred_language',
         'daily_learning_time',
@@ -47,6 +48,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'daily_learning_time' => 'integer',
             'is_admin' => 'boolean',
+            'is_suspended' => 'boolean',
             'last_activity_date' => 'date',
         ];
     }
