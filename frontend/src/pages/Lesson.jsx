@@ -127,12 +127,12 @@ export default function LessonPage() {
         </div>
 
         <div className="playground-sidebar">
-          <CodingPlayground 
-            exercise={lesson.exercises?.[0] || { id: null, title: 'Practice', description: 'Write your code below', starter_code: '' }} 
+          <CodingPlayground
+            key={lesson.exercises?.[0]?.id ?? lesson.id}
+            exercise={lesson.exercises?.[0] || { id: null, title: 'Practice', description: 'Write your code below', starter_code: '' }}
             onSubmissionComplete={(submission) => {
-              console.log('Submission:', submission);
               if (submission?.is_correct) {
-                alert('Great job! Exercise completed successfully! 🎉');
+                alert('Great job! Exercise completed successfully!');
               }
             }}
             compact={true}

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthProvider';
 import ProtectedRoute from './components/ProtectedRoute';
 import BrandLogo from './components/BrandLogo';
@@ -9,7 +9,7 @@ import Roadmap from './pages/Roadmap';
 import ModulePage from './pages/ModulePage';
 import Lessons from './pages/Lessons';
 import LessonPage from './pages/Lesson';
-// import AiInstructor from './pages/AiInstructor';
+import Playground from './pages/Playground';
 import { useTheme } from './context/ThemeProvider';
 import './index.css';
 
@@ -49,7 +49,7 @@ function App() {
               <nav>
                 <Link to="/modules">Roadmap</Link>
                 <Link to="/lessons">Lessons</Link>
-                {/* <Link to="/ai">AI Mentor</Link> */}
+                <Link to="/playground">Playground</Link>
                 <Link to="/dashboard">Dashboard</Link>
                 <Link to="/login">Login</Link>
                 <button
@@ -72,12 +72,12 @@ function App() {
                   <div className="home-page">
                     <section className="hero-panel hero-grid fade-up">
                       <div className="hero-content">
-                        <span className="eyebrow">Your coding mentor</span>
-                        <h1>Learn Python with a friendly instructor by your side.</h1>
-                        <p>CodeCraft turns every lesson into a playful learning lab with instant guidance, bright feedback, and beginner-first projects.</p>
+                        <span className="eyebrow">Your coding lab</span>
+                        <h1>Learn Python with a live coding playground.</h1>
+                        <p>CodeCraft turns every lesson into hands-on practice — run real code in the browser, track progress, and build skills project by project.</p>
                         <div className="hero-actions">
                           <Link to="/register" className="button-primary">Join the lab</Link>
-                          {/* <Link to="/ai" className="button-secondary">Meet your AI mentor</Link> */}
+                          <Link to="/playground" className="button-secondary">Open playground</Link>
                         </div>
 
                         <div className="hero-features">
@@ -217,7 +217,8 @@ function App() {
               <Route path="/modules/:slug" element={<ModulePage />} />
               <Route path="/lessons" element={<Lessons />} />
               <Route path="/lessons/:slug" element={<LessonPage />} />
-              {/* <Route path="/ai" element={<ProtectedRoute><AiInstructor /></ProtectedRoute>} /> */}
+              <Route path="/playground" element={<Playground />} />
+              <Route path="/ai" element={<Navigate to="/playground" replace />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             </Routes>
           </main>

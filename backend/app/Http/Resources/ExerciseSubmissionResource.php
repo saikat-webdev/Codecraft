@@ -16,6 +16,7 @@ class ExerciseSubmissionResource extends JsonResource
             'output' => $this->output,
             'is_correct' => $this->is_correct,
             'ai_feedback' => $this->ai_feedback,
+            'feedback' => $this->ai_feedback,
             'created_at' => $this->created_at,
             'exercise' => new CodingExerciseResource($this->whenLoaded('exercise')),
         ];

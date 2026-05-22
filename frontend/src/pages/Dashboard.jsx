@@ -32,7 +32,7 @@ export default function Dashboard() {
           <div>
             <span className="eyebrow">Dashboard</span>
             <h1>Welcome{user ? `, ${user.name}` : ''}</h1>
-            <p>Your instructor-style dashboard keeps the next coding step clear, bright, and motivating.</p>
+            <p>Your dashboard keeps the next coding step clear, bright, and motivating.</p>
           </div>
         </div>
 

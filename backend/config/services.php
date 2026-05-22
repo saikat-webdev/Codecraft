@@ -35,17 +35,15 @@ return [
         ],
     ],
 
-    'gemini' => [
-        'provider' => env('GEMINI_API_PROVIDER', 'google'),
-        'key' => env('GEMINI_API_KEY'),
-        'model' => env('GEMINI_MODEL', 'gemini-pro'),
-        'endpoint' => env('GEMINI_ENDPOINT'),
-    ],
-
+    /*
+    | Public Judge0 CE — no API key required.
+    | Default host: ce.judge0.com (official free public API).
+    | Set JUDGE0_BASE_URL if you use another Judge0-compatible endpoint.
+    */
     'judge0' => [
-        'base_url' => env('JUDGE0_BASE_URL', 'https://judge0-ce.p.rapidapi.com'),
+        'base_url' => env('JUDGE0_BASE_URL', 'https://ce.judge0.com'),
         'api_key' => env('JUDGE0_API_KEY'),
-        'timeout' => env('JUDGE0_TIMEOUT', 30),
+        'timeout' => (int) env('JUDGE0_TIMEOUT', 30),
     ],
 
 ];

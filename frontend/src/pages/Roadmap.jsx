@@ -37,7 +37,7 @@ export default function Roadmap() {
           <div>
             <span className="eyebrow">Python Roadmap</span>
             <h1>Structured beginner Python learning</h1>
-            <p>Follow a clear path from Python basics to small projects with a friendly AI instructor by your side.</p>
+            <p>Follow a clear path from Python basics to small projects with lessons and a built-in coding playground.</p>
           </div>
           <div className="roadmap-summary">
             <div className="summary-top">

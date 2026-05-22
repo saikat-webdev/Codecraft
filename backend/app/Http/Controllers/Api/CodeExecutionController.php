@@ -19,7 +19,7 @@ class CodeExecutionController extends Controller
     {
         $validated = $request->validate([
             'code' => 'required|string|max:50000',
-            'language' => 'nullable|string|in:python,javascript,java,cpp,c',
+            'language' => 'nullable|string|in:python,python3,javascript,js,cpp,c++,java,c',
             'timeout' => 'nullable|integer|min:1|max:30',
         ]);
 
