@@ -22,7 +22,7 @@ class AuthController extends BaseApiController
         $token = $user->createToken('api-token')->plainTextToken;
 
         return $this->success([
-            'user' => new UserResource($user),
+            'user' => new UserResource($user->load('achievements')),
             'access_token' => $token,
             'token_type' => 'Bearer',
         ], 'Registration successful', 201);
@@ -40,7 +40,7 @@ class AuthController extends BaseApiController
         $token = $user->createToken('api-token')->plainTextToken;
 
         return $this->success([
-            'user' => new UserResource($user),
+            'user' => new UserResource($user->load('achievements')),
             'access_token' => $token,
             'token_type' => 'Bearer',
         ], 'Login successful');
@@ -56,6 +56,9 @@ class AuthController extends BaseApiController
 
     public function user(Request $request): JsonResponse
     {
-        return $this->success(new UserResource($request->user()), 'Authenticated user retrieved');
+        return $this->success(
+            new UserResource($request->user()->load('achievements')),
+            'Authenticated user retrieved'
+        );
     }
 }

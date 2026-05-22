@@ -3,6 +3,8 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthProvider';
 import { fetchLesson, fetchModule, fetchProgress, submitProgress } from '../services/learning';
 import CodingPlayground from '../components/CodingPlayground';
+import SuddenTestModal from '../components/SuddenTestModal';
+import { useSuddenTest } from '../hooks/useSuddenTest';
 
 export default function LessonPage() {
   const { slug } = useParams();
@@ -14,6 +16,7 @@ export default function LessonPage() {
   const [saving, setSaving] = useState(false);
   const [progress, setProgress] = useState(null);
   const [error, setError] = useState('');
+  const suddenTest = useSuddenTest(Boolean(user && lesson));
 
   useEffect(() => {
     let mounted = true;
@@ -90,6 +93,16 @@ export default function LessonPage() {
   if (!lesson) return <div className="app-shell"><div className="lesson-card">Lesson not found.</div></div>;
 
   return (
+    <>
+    {suddenTest.visible && suddenTest.challenge && (
+      <SuddenTestModal
+        challenge={suddenTest.challenge}
+        timerSeconds={suddenTest.timerSeconds}
+        difficulty={suddenTest.difficulty}
+        onClose={suddenTest.closeModal}
+        onSubmit={suddenTest.submitResult}
+      />
+    )}
     <div className="app-shell lesson-page-grid">
       <main className="page-card prose max-w-none lesson-detail-card">
         <div className="page-header">
@@ -140,5 +153,6 @@ export default function LessonPage() {
         </div>
       </aside>
     </div>
+    </>
   );
 }

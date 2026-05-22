@@ -1,14 +1,16 @@
 <?php
 
+use App\Http\Controllers\Api\AdminSuddenTestController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CodeEvaluationController;
 use App\Http\Controllers\Api\CodeExecutionController;
 use App\Http\Controllers\Api\ExerciseController;
 use App\Http\Controllers\Api\LessonController;
 use App\Http\Controllers\Api\ModuleController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ProgressController;
 use App\Http\Controllers\Api\QuizController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\SuddenTestController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
@@ -31,17 +33,36 @@ Route::get('exercises/{exercise}', [ExerciseController::class, 'show']);
 
 Route::post('code/run', [CodeExecutionController::class, 'run']);
 
+Route::get('sudden-tests/config', [SuddenTestController::class, 'config']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', [AuthController::class, 'user']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('lessons', [LessonController::class, 'store']);
     Route::post('progress', [ProgressController::class, 'update']);
     Route::get('progress', [ProgressController::class, 'index']);
-    
-    // Exercise submissions
+
+    Route::get('profile', [ProfileController::class, 'show']);
+    Route::put('profile', [ProfileController::class, 'update']);
+    Route::post('profile/avatar', [ProfileController::class, 'uploadAvatar']);
+    Route::get('profile/stats', [ProfileController::class, 'stats']);
+    Route::get('profile/achievements', [ProfileController::class, 'achievements']);
+
+    Route::get('sudden-tests/challenge', [SuddenTestController::class, 'challenge']);
+    Route::post('sudden-tests/{question}/submit', [SuddenTestController::class, 'submit']);
+
     Route::post('exercises/{exercise}/submit', [CodeEvaluationController::class, 'submit']);
     Route::post('exercises/{exercise}/evaluate', [CodeEvaluationController::class, 'evaluate']);
     Route::get('exercises/{exercise}/hints', [CodeEvaluationController::class, 'hints']);
     Route::get('submissions/history', [CodeEvaluationController::class, 'history']);
     Route::post('exercises', [ExerciseController::class, 'store']);
+
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        Route::get('sudden-tests/settings', [AdminSuddenTestController::class, 'settings']);
+        Route::put('sudden-tests/settings', [AdminSuddenTestController::class, 'updateSettings']);
+        Route::get('sudden-tests/questions', [AdminSuddenTestController::class, 'questions']);
+        Route::post('sudden-tests/questions', [AdminSuddenTestController::class, 'storeQuestion']);
+        Route::put('sudden-tests/questions/{question}', [AdminSuddenTestController::class, 'updateQuestion']);
+        Route::delete('sudden-tests/questions/{question}', [AdminSuddenTestController::class, 'destroyQuestion']);
+    });
 });

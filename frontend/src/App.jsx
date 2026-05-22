@@ -10,6 +10,9 @@ import ModulePage from './pages/ModulePage';
 import Lessons from './pages/Lessons';
 import LessonPage from './pages/Lesson';
 import Playground from './pages/Playground';
+import Profile from './pages/Profile';
+import AdminSuddenTests from './pages/AdminSuddenTests';
+import ProfileMenu from './components/ProfileMenu';
 import { useTheme } from './context/ThemeProvider';
 import './index.css';
 
@@ -51,7 +54,7 @@ function App() {
                 <Link to="/lessons">Lessons</Link>
                 <Link to="/playground">Playground</Link>
                 <Link to="/dashboard">Dashboard</Link>
-                <Link to="/login">Login</Link>
+                <ProfileMenu />
                 <button
                   type="button"
                   onClick={toggleTheme}
@@ -219,7 +222,9 @@ function App() {
               <Route path="/lessons/:slug" element={<LessonPage />} />
               <Route path="/playground" element={<Playground />} />
               <Route path="/ai" element={<Navigate to="/playground" replace />} />
+              <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/admin/sudden-tests" element={<ProtectedRoute><AdminSuddenTests /></ProtectedRoute>} />
             </Routes>
           </main>
         </div>

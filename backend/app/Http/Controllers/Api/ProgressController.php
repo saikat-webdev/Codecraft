@@ -7,11 +7,14 @@ use App\Http\Resources\LessonSummaryResource;
 use App\Http\Resources\ProgressResource;
 use App\Models\Lesson;
 use App\Models\Progress;
+use App\Services\GamificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ProgressController extends BaseApiController
 {
+    public function __construct(protected GamificationService $gamification) {}
+
     public function index(Request $request): JsonResponse
     {
         $user = $request->user();
@@ -60,6 +63,10 @@ class ProgressController extends BaseApiController
             'score' => $data['score'] ?? null,
             'completed_at' => $data['completed_at'] ?? now(),
         ]);
+
+        if ($data['completed']) {
+            $this->gamification->addXp($user, GamificationService::XP_LESSON_COMPLETE);
+        }
 
         return $this->success(new ProgressResource($progress), 'Progress updated');
     }

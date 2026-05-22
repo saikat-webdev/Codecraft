@@ -7,16 +7,15 @@ use App\Http\Resources\ExerciseSubmissionResource;
 use App\Models\CodingExercise;
 use App\Models\ExerciseSubmission;
 use App\Services\CodeEvaluationService;
+use App\Services\GamificationService;
 use Illuminate\Http\Request;
 
 class CodeEvaluationController extends Controller
 {
-    protected CodeEvaluationService $evaluator;
-
-    public function __construct(CodeEvaluationService $evaluator)
-    {
-        $this->evaluator = $evaluator;
-    }
+    public function __construct(
+        protected CodeEvaluationService $evaluator,
+        protected GamificationService $gamification,
+    ) {}
 
     public function evaluate(Request $request, CodingExercise $exercise)
     {
@@ -68,6 +67,10 @@ class CodeEvaluationController extends Controller
             'is_correct' => $isCorrect,
             'ai_feedback' => $aiFeedback,
         ]);
+
+        if ($isCorrect) {
+            $this->gamification->addXp($request->user(), GamificationService::XP_EXERCISE_CORRECT);
+        }
 
         return new ExerciseSubmissionResource($submission);
     }
