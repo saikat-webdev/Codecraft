@@ -7,8 +7,9 @@ export default function BrandLogo({ compact }) {
         <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="logoGradient" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#38BDF8" />
-              <stop offset="100%" stopColor="#8B5CF6" />
+              <stop offset="0%" stopColor="#22d3ee" />
+              <stop offset="50%" stopColor="#a78bfa" />
+              <stop offset="100%" stopColor="#f472b6" />
             </linearGradient>
           </defs>
           <rect x="2" y="2" width="30" height="30" rx="14" fill="url(#logoGradient)" />

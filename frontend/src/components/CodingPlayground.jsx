@@ -112,20 +112,20 @@ export default function CodingPlayground({ exercise, onSubmissionComplete, compa
                 </div>
 
                 <div className="playground-actions sidebar-actions">
-                    <button onClick={handleRun} disabled={isRunning} className="button-primary" style={{ padding: '0.4rem 0.8rem' }}>
+                    <button onClick={handleRun} disabled={isRunning} className="button-primary">
                         {isRunning ? 'Running...' : 'Run'}
                     </button>
-                    <button onClick={resetCode} className="button-secondary" disabled={isRunning} style={{ padding: '0.4rem 0.8rem' }}>
+                    <button onClick={resetCode} className="button-secondary" disabled={isRunning}>
                         Reset
                     </button>
-                    <button onClick={handleSubmit} disabled={isSubmitting || !output} className="button-secondary" style={{ padding: '0.4rem 0.8rem' }}>
+                    <button onClick={handleSubmit} disabled={isSubmitting || !output || !exercise?.id} className="button-secondary">
                         {isSubmitting ? '...' : 'Submit'}
                     </button>
                 </div>
 
                 <div className="console-panel sidebar-console">
                     <div className="console-header"><span>Output</span></div>
-                    <pre className={`console-output ${error ? 'error' : ''}`} style={{ padding: '0.5rem', fontSize: '0.75rem', minHeight: '40px' }}>
+                    <pre className={`console-output ${error ? 'error' : ''}`}>
                         {error || output || 'Run code...'}
                     </pre>
                 </div>
@@ -167,19 +167,19 @@ export default function CodingPlayground({ exercise, onSubmissionComplete, compa
             </div>
 
             <div className="playground-actions">
-                <button onClick={handleRun} disabled={isRunning} className="button-primary">
-                    {isRunning ? 'Running...' : 'Run Code'}
-                </button>
-                <button onClick={resetCode} className="button-secondary" disabled={isRunning}>
-                    Reset
-                </button>
-                <button onClick={handleSubmit} disabled={isSubmitting || !output} className="button-secondary">
-                    {isSubmitting ? 'Submitting...' : 'Submit'}
-                </button>
-                <button onClick={getHints} className="button-secondary">
-                    Get Hints
-                </button>
-            </div>
+    <button onClick={handleRun} disabled={isRunning} className="button-primary">
+        {isRunning ? 'Running...' : 'Run Code'}
+    </button>
+    <button onClick={resetCode} className="button-secondary" disabled={isRunning}>
+        Reset
+    </button>
+    <button onClick={handleSubmit} disabled={isSubmitting || !output || !exercise?.id} className="button-secondary">
+        {isSubmitting ? 'Submitting...' : 'Submit'}
+    </button>
+    <button onClick={getHints} disabled={!exercise?.id} className="button-secondary">
+        Get Hints
+    </button>
+</div>
 
             {showHints && hints.length > 0 && (
                 <div className="hints-panel">

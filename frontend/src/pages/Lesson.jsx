@@ -10,7 +10,6 @@ export default function LessonPage() {
   const { user } = useContext(AuthContext);
   const [lesson, setLesson] = useState(null);
   const [moduleData, setModuleData] = useState(null);
-  const [helpText, setHelpText] = useState('Loading lesson guidance...');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [progress, setProgress] = useState(null);
@@ -39,9 +38,6 @@ export default function LessonPage() {
       .finally(() => {
         if (mounted) setLoading(false);
       });
-
-    // AI support is temporarily disabled while the feature is paused.
-    if (mounted) setHelpText('AI instructor support is temporarily disabled.');
 
     if (user) {
       fetchProgress()
@@ -125,40 +121,23 @@ export default function LessonPage() {
       </main>
 
       <aside className="page-card code-sidebar-card">
-        {lesson.exercises && lesson.exercises.length > 0 ? (
-          <div className="sidebar-header">
-            <span className="eyebrow">Practice Playground</span>
-            <h2>Try the code</h2>
-          </div>
-        ) : (
-          <div>
-            <span className="eyebrow">AI Instructor</span>
-            <h2>Lesson support</h2>
-            <p>{helpText}</p>
-          </div>
-        )}
+        <div className="sidebar-header">
+          <span className="eyebrow">Practice Playground</span>
+          <h2>Try the code</h2>
+        </div>
 
-        {lesson.exercises && lesson.exercises.length > 0 ? (
-          <div className="playground-sidebar">
-            {lesson.exercises.slice(0, 1).map((exercise) => (
-              <CodingPlayground 
-                key={exercise.id}
-                exercise={exercise} 
-                onSubmissionComplete={(submission) => {
-                  console.log('Submission:', submission);
-                  if (submission.is_correct) {
-                    alert('Great job! Exercise completed successfully! 🎉');
-                  }
-                }}
-                compact={true}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="chat-history lesson-chat">
-            <div className="chat-message assistant">AI chat is disabled for now. Please continue through the lesson content and projects.</div>
-          </div>
-        )}
+        <div className="playground-sidebar">
+          <CodingPlayground 
+            exercise={lesson.exercises?.[0] || { id: null, title: 'Practice', description: 'Write your code below', starter_code: '' }} 
+            onSubmissionComplete={(submission) => {
+              console.log('Submission:', submission);
+              if (submission?.is_correct) {
+                alert('Great job! Exercise completed successfully! 🎉');
+              }
+            }}
+            compact={true}
+          />
+        </div>
       </aside>
     </div>
   );

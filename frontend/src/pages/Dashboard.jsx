@@ -70,7 +70,7 @@ export default function Dashboard() {
             <p className="section-subtitle">Check completed lessons, earned confidence, and what to try next.</p>
           </div>
 
-          <div className="progress-summary-card">
+          <div className="page-card progress-summary-card">
             <div>
               <strong>Current module</strong>
               <p>{currentModule}</p>
