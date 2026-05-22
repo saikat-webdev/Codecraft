@@ -18,9 +18,9 @@ class SuddenTestSetting extends Model
     public static function current(): self
     {
         return static::firstOrCreate([], [
-            'enabled' => false,
-            'min_interval_seconds' => 180,
-            'max_interval_seconds' => 480,
+            'enabled' => true,
+            'min_interval_seconds' => 60,
+            'max_interval_seconds' => 120,
             'default_timer_seconds' => 90,
             'base_difficulty' => 2,
         ]);
