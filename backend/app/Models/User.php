@@ -21,6 +21,7 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar_path',
+        'avatar_style',
         'bio',
         'is_admin',
         'is_suspended',
@@ -71,10 +72,15 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute(): ?string
     {
-        if (! $this->avatar_path) {
-            return null;
+        if ($this->avatar_path) {
+            return Storage::disk('public')->url($this->avatar_path);
         }
 
-        return Storage::disk('public')->url($this->avatar_path);
+        // Return a default avatar using DiceBear API based on user ID and selected style
+        $style = $this->avatar_style ?? 'avataaars';
+        $seed = urlencode($this->id . '-' . $this->name);
+        $backgroundColor = urlencode('b6e3f4,c0aede,d1d4f9');
+        
+        return "https://api.dicebear.com/7.x/{$style}/svg?seed={$seed}&backgroundColor={$backgroundColor}";
     }
 }

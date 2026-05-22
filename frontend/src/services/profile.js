@@ -10,6 +10,8 @@ export const profileApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+  setAvatarStyle: (style) => api.post('/profile/avatar/style', { style }),
+  getAvatarStyles: () => api.get('/profile/avatar/styles'),
   getStats: () => api.get('/profile/stats'),
   getAchievements: () => api.get('/profile/achievements'),
 };

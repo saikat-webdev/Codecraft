@@ -48,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('profile', [ProfileController::class, 'show']);
     Route::put('profile', [ProfileController::class, 'update']);
     Route::post('profile/avatar', [ProfileController::class, 'uploadAvatar']);
+    Route::post('profile/avatar/style', [ProfileController::class, 'setAvatarStyle']);
+    Route::get('profile/avatar/styles', [ProfileController::class, 'avatarStyles']);
     Route::get('profile/stats', [ProfileController::class, 'stats']);
     Route::get('profile/achievements', [ProfileController::class, 'achievements']);
 

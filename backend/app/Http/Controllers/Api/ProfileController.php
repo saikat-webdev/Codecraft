@@ -70,6 +70,43 @@ class ProfileController extends BaseApiController
         );
     }
 
+    public function setAvatarStyle(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'style' => ['required', 'string', 'in:avataaars,notionists,pixels,fun-emoji,bottts,lorelei,pixel-art'],
+        ]);
+
+        $user = $request->user();
+        
+        // Clear custom avatar when selecting a default style
+        if ($user->avatar_path) {
+            Storage::disk('public')->delete($user->avatar_path);
+            $user->avatar_path = null;
+        }
+        
+        $user->update(['avatar_style' => $validated['style']]);
+
+        return $this->success(
+            new UserResource($user->fresh()->load('achievements')),
+            'Avatar style updated'
+        );
+    }
+
+    public function avatarStyles(): JsonResponse
+    {
+        $styles = [
+            ['id' => 'avataaars', 'name' => 'Avatars', 'description' => 'Classic avatar style'],
+            ['id' => 'notionists', 'name' => 'Notionists', 'description' => 'Minimalist style'],
+            ['id' => 'pixels', 'name' => 'Pixels', 'description' => 'Pixel art style'],
+            ['id' => 'fun-emoji', 'name' => 'Fun Emoji', 'description' => 'Emoji-style avatars'],
+            ['id' => 'bottts', 'name' => 'Robots', 'description' => 'Robot avatars'],
+            ['id' => 'lorelei', 'name' => 'Lorelei', 'description' => 'Artistic style'],
+            ['id' => 'pixel-art', 'name' => 'Pixel Art', 'description' => 'Retro pixel art'],
+        ];
+
+        return $this->success($styles, 'Avatar styles retrieved');
+    }
+
     public function stats(Request $request): JsonResponse
     {
         $user = $request->user();

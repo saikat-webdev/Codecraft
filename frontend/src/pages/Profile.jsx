@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthProvider';
 import { profileApi } from '../services/profile';
+import AvatarStyleSelector from '../components/AvatarStyleSelector';
 
 export default function Profile() {
   const { user, refreshUser, updateUser } = useContext(AuthContext);
@@ -196,6 +197,15 @@ export default function Profile() {
       </div>
 
       <section className="page-card fade-up delay-3">
+        <h2>Avatar Style</h2>
+        <AvatarStyleSelector
+          userId={user.id}
+          currentStyle={user.avatar_style || 'avataaars'}
+          onSelect={() => refreshUser()}
+        />
+      </section>
+
+      <section className="page-card fade-up delay-4">
         <h2>Achievement badges</h2>
         <p className="section-subtitle">{earned.length} of {achievements.length} unlocked</p>
         <div className="badges-grid">
