@@ -2,13 +2,23 @@ import { useEffect, useState } from 'react';
 import { profileApi } from '../services/profile';
 
 const avatarStyles = [
-  { id: 'avataaars', name: 'Avatars', description: 'Classic avatar style' },
+  { id: 'avataaars', name: 'Classic Avatars', description: 'Classic avatar style' },
   { id: 'notionists', name: 'Notionists', description: 'Minimalist style' },
   { id: 'pixels', name: 'Pixels', description: 'Pixel art style' },
   { id: 'fun-emoji', name: 'Fun Emoji', description: 'Emoji-style avatars' },
   { id: 'bottts', name: 'Robots', description: 'Robot avatars' },
   { id: 'lorelei', name: 'Lorelei', description: 'Artistic style' },
   { id: 'pixel-art', name: 'Pixel Art', description: 'Retro pixel art' },
+  { id: 'open-peeps', name: '🦸 Hero Squad', description: 'Hand-drawn hero characters' },
+  { id: 'micah', name: '🥷 Ninja Warrior', description: 'Illustration style warriors' },
+  { id: 'identicon', name: '⚡ Power Icons', description: 'Geometric power symbols' },
+  { id: 'notionists-neon', name: '🌟 Neon Stars', description: 'Glowing neon avatars' },
+  { id: 'avataaars-neon', name: '💀 Dark Knight', description: 'Dark neon hero style' },
+  { id: 'big-ears', name: '🎭 Cartoon Crew', description: 'Fun cartoon characters' },
+  { id: 'big-ears-neon', name: '🔥 Fire Squad', description: 'Neon cartoon heroes' },
+  { id: 'croodles', name: '👾 Pixel Monsters', description: 'Cute monster avatars' },
+  { id: 'croodles-neutral', name: '🐉 Dragon Clan', description: 'Neutral monster style' },
+  { id: 'rings', name: '⭕ Magic Rings', description: 'Mystical ring avatars' },
 ];
 
 export default function AvatarStyleSelector({ userId, currentStyle, onSelect }) {
