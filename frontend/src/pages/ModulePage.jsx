@@ -1,31 +1,45 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthProvider';
 import { fetchModule, fetchProgress } from '../services/learning';
 
 export default function ModulePage() {
   const { slug } = useParams();
+  const { user } = useContext(AuthContext);
   const [module, setModule] = useState(null);
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
+    setLoading(true);
 
-    Promise.all([fetchModule(slug), fetchProgress()])
-      .then(([moduleRes, progressRes]) => {
-        if (!mounted) return;
-        setModule(moduleRes.data.data);
-        setProgress(progressRes.data.data);
+    fetchModule(slug)
+      .then((moduleRes) => {
+        if (mounted) setModule(moduleRes.data.data);
       })
-      .catch(() => {})
-      .finally(() => {
-        if (mounted) setLoading(false);
+      .catch(() => {
+        if (mounted) setModule(null);
       });
+
+    const progressPromise = user
+      ? fetchProgress()
+          .then((res) => {
+            if (mounted) setProgress(res.data.data);
+          })
+          .catch(() => {
+            if (mounted) setProgress(null);
+          })
+      : Promise.resolve();
+
+    progressPromise.finally(() => {
+      if (mounted) setLoading(false);
+    });
 
     return () => {
       mounted = false;
     };
-  }, [slug]);
+  }, [slug, user]);
 
   const completedLessonIds = new Set((progress?.progress || []).filter((item) => item.completed).map((item) => item.lesson_id));
   const moduleCompleted = module?.lessons?.length ? Math.round((completedLessonIds.size / module.lessons.length) * 100) : 0;

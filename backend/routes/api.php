@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\AdminActivityController;
 use App\Http\Controllers\Api\AdminDashboardController;
+use App\Http\Controllers\Api\ExamController;
 use App\Http\Controllers\Api\AdminSettingsController;
 use App\Http\Controllers\Api\AdminSuddenTestController;
 use App\Http\Controllers\Api\AdminUserController;
@@ -31,6 +33,9 @@ Route::get('modules', [ModuleController::class, 'index']);
 Route::get('modules/{module:slug}', [ModuleController::class, 'show']);
 Route::get('modules/{module:slug}/lessons', [ModuleController::class, 'lessons']);
 
+Route::get('exams', [ExamController::class, 'index']);
+Route::get('exams/{exam:slug}', [ExamController::class, 'show']);
+
 Route::get('lessons/{lesson:slug}/exercises', [ExerciseController::class, 'byLesson']);
 Route::get('exercises/{exercise}', [ExerciseController::class, 'show']);
 
@@ -56,6 +61,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('sudden-tests/challenge', [SuddenTestController::class, 'challenge']);
     Route::post('sudden-tests/{question}/submit', [SuddenTestController::class, 'submit']);
 
+    Route::get('exam-attempts', [ExamController::class, 'myAttempts']);
+    Route::post('exams/{exam:slug}/submit', [ExamController::class, 'submit']);
+
     Route::post('exercises/{exercise}/submit', [CodeEvaluationController::class, 'submit']);
     Route::post('exercises/{exercise}/evaluate', [CodeEvaluationController::class, 'evaluate']);
     Route::get('exercises/{exercise}/hints', [CodeEvaluationController::class, 'hints']);
@@ -67,6 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('dashboard/stats', [AdminDashboardController::class, 'stats']);
         Route::get('dashboard/activity', [AdminDashboardController::class, 'activity']);
         Route::get('dashboard/leaderboard', [AdminDashboardController::class, 'leaderboard']);
+        Route::get('activity-logs', [AdminActivityController::class, 'index']);
 
         // Users
         Route::get('users', [AdminUserController::class, 'index']);

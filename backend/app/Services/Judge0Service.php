@@ -18,8 +18,9 @@ class Judge0Service
 
     protected int $timeout;
 
-    public function __construct()
-    {
+    public function __construct(
+        protected LocalCodeRunnerService $localRunner,
+    ) {
         // Public CE host (no API key). Override via JUDGE0_BASE_URL if needed.
         $this->baseUrl = rtrim(config('services.judge0.base_url', 'https://ce.judge0.com'), '/');
         $this->apiKey = config('services.judge0.api_key');
@@ -28,6 +29,10 @@ class Judge0Service
 
     public function runCode(string $code, string $language = 'python', int $cpuTimeLimit = 5): array
     {
+        if (!config('services.judge0.enabled', true)) {
+            return $this->runLocally($code, $language, $cpuTimeLimit);
+        }
+
         $languageId = $this->getLanguageId($language);
 
         try {
@@ -42,17 +47,19 @@ class Judge0Service
         } catch (\Throwable $e) {
             Log::warning('Judge0 submission failed', ['message' => $e->getMessage()]);
 
-            return [
-                'success' => false,
-                'error' => 'Could not reach the code execution service. Please try again.',
-            ];
+            return $this->runLocally($code, $language, $cpuTimeLimit)
+                ?? [
+                    'success' => false,
+                    'error' => 'Could not reach the code execution service. Please try again.',
+                ];
         }
 
         if ($response->failed()) {
-            return [
-                'success' => false,
-                'error' => 'Failed to submit code for execution.',
-            ];
+            return $this->runLocally($code, $language, $cpuTimeLimit)
+                ?? [
+                    'success' => false,
+                    'error' => 'Failed to submit code for execution.',
+                ];
         }
 
         $token = $response->json('token');
@@ -153,9 +160,15 @@ class Judge0Service
             'c++' => 54,
             'c' => 50,
             'java' => 62,
+            'react' => 63,
         ];
 
-        return $languages[strtolower($language)] ?? 71;
+        $normalized = strtolower($language);
+        if ($normalized === 'react') {
+            $normalized = 'javascript';
+        }
+
+        return $languages[$normalized] ?? 71;
     }
 
     protected function getHeaders(): array
@@ -169,5 +182,24 @@ class Judge0Service
         }
 
         return $headers;
+    }
+
+    protected function runLocally(string $code, string $language, int $cpuTimeLimit): ?array
+    {
+        if (!config('services.code_runner.fallback_enabled', true)) {
+            return null;
+        }
+
+        if (!$this->localRunner->supports($language)) {
+            return null;
+        }
+
+        $result = $this->localRunner->run($code, $language, $cpuTimeLimit);
+
+        if (!$result['success'] && str_contains($result['error'] ?? '', 'not installed')) {
+            return null;
+        }
+
+        return $result;
     }
 }

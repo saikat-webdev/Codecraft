@@ -37,6 +37,13 @@ class AuthController extends BaseApiController
         }
 
         $user = Auth::user();
+
+        if ($user->is_suspended) {
+            Auth::logout();
+
+            return $this->error('Your account has been suspended. Contact support.', 403);
+        }
+
         $token = $user->createToken('api-token')->plainTextToken;
 
         return $this->success([

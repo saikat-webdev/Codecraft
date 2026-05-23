@@ -79,6 +79,9 @@ export default function ProfileMenu() {
           <Link to="/dashboard" className="profile-dropdown-item" onClick={() => setOpen(false)}>
             Dashboard
           </Link>
+          <Link to="/exams" className="profile-dropdown-item" onClick={() => setOpen(false)}>
+            Practice exams
+          </Link>
           {user.is_admin && (
             <>
               <Link

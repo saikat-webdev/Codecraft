@@ -13,8 +13,8 @@ export default function Playground() {
             <span className="eyebrow">Code lab</span>
             <h1>Coding Playground</h1>
             <p>
-              Write code in Python, JavaScript, or C++, run it securely via Judge0,
-              and see output in the terminal below.
+              Write code in Python, JavaScript, Java, C, C++, or React-style JS.
+              Runs through our free execution service (public Judge0 CE with optional local fallback).
             </p>
           </div>
         </div>

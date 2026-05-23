@@ -1,7 +1,7 @@
 import api from './api';
 
-export function fetchModules() {
-  return api.get('/modules');
+export function fetchModules(track) {
+  return api.get('/modules', { params: track ? { track } : {} });
 }
 
 export function fetchModule(slug) {

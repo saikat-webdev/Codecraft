@@ -24,6 +24,7 @@ class LessonResource extends JsonResource
                     'id' => $this->module->id,
                     'title' => $this->module->title,
                     'slug' => $this->module->slug,
+                    'track' => $this->module->track,
                     'order' => $this->module->order,
                 ] : null;
             }),

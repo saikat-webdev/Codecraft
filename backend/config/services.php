@@ -41,9 +41,15 @@ return [
     | Set JUDGE0_BASE_URL if you use another Judge0-compatible endpoint.
     */
     'judge0' => [
+        'enabled' => env('JUDGE0_ENABLED', true),
         'base_url' => env('JUDGE0_BASE_URL', 'https://ce.judge0.com'),
         'api_key' => env('JUDGE0_API_KEY'),
         'timeout' => (int) env('JUDGE0_TIMEOUT', 30),
+    ],
+
+    'code_runner' => [
+        'fallback_enabled' => env('CODE_RUNNER_FALLBACK', true),
+        'timeout' => (int) env('CODE_RUNNER_TIMEOUT', 8),
     ],
 
 ];

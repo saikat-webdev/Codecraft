@@ -11,9 +11,13 @@ class ModuleController extends BaseApiController
 {
     public function index(): JsonResponse
     {
-        $modules = Module::with('lessons')->orderBy('order')->get();
+        $query = Module::with('lessons')->orderBy('order');
 
-        return $this->success(ModuleResource::collection($modules), 'Modules retrieved');
+        if ($track = request()->query('track')) {
+            $query->where('track', $track);
+        }
+
+        return $this->success(ModuleResource::collection($query->get()), 'Modules retrieved');
     }
 
     public function show(Module $module): JsonResponse

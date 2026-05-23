@@ -12,6 +12,8 @@ class ModuleResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
+            'track' => $this->track ?? 'python',
+            'icon' => $this->icon,
             'description' => $this->description,
             'order' => $this->order,
             'lessons' => LessonSummaryResource::collection($this->whenLoaded('lessons')),

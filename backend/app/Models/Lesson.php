@@ -50,4 +50,25 @@ class Lesson extends Model
     {
         return 'slug';
     }
+
+    /**
+     * Normalize legacy content that stored literal \n in code blocks.
+     */
+    public function getContentAttribute(?string $value): ?string
+    {
+        if ($value === null || !str_contains($value, '<pre')) {
+            return $value;
+        }
+
+        return preg_replace_callback(
+            '/<pre><code>(.*?)<\/code><\/pre>/s',
+            function (array $matches) {
+                $inner = html_entity_decode($matches[1], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $inner = str_replace(["\\n", "\\t"], ["\n", "\t"], $inner);
+
+                return '<pre><code>' . htmlspecialchars($inner, ENT_NOQUOTES, 'UTF-8') . '</code></pre>';
+            },
+            $value
+        );
+    }
 }

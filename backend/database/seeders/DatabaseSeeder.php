@@ -39,9 +39,14 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call([
+            AdminUserSeeder::class,
             AchievementSeeder::class,
             SuddenTestSeeder::class,
             CodingExerciseSeeder::class,
+            TrackCodingExerciseSeeder::class,
+            QuizSeeder::class,
+            FullCourseModulesSeeder::class,
+            ExamSeeder::class,
         ]);
 
         $modules = [
@@ -437,6 +442,8 @@ print(book.title)</code></pre>',
                 'title' => $moduleData['title'],
                 'description' => $moduleData['description'],
                 'order' => $moduleData['order'],
+                'track' => 'python',
+                'icon' => '🐍',
             ]);
 
             foreach ($moduleData['lessons'] as $lessonData) {

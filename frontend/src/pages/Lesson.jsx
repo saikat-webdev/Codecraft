@@ -2,9 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthProvider';
 import { fetchLesson, fetchModule, fetchProgress, submitProgress } from '../services/learning';
+import LessonContent from '../components/LessonContent';
 import CodingPlayground from '../components/CodingPlayground';
+import LessonQuiz from '../components/LessonQuiz';
 import SuddenTestModal from '../components/SuddenTestModal';
 import { useSuddenTest } from '../hooks/useSuddenTest';
+import { trackToLanguageId } from '../constants/playgroundLanguages';
 
 export default function LessonPage() {
   const { slug } = useParams();
@@ -87,6 +90,9 @@ export default function LessonPage() {
   const completedLessonIds = new Set((progress?.progress || []).filter((item) => item.completed).map((item) => item.lesson_id));
   const isCompleted = lesson && completedLessonIds.has(lesson.id);
   const nextLesson = moduleData?.lessons?.find((next) => next.order > lesson?.order);
+  const playgroundLanguage = trackToLanguageId(
+    lesson?.module?.track || moduleData?.track || lesson?.language || 'python'
+  );
 
   if (loading && !lesson) return <div className="app-shell">Loading lesson...</div>;
 
@@ -118,7 +124,9 @@ export default function LessonPage() {
           </div>
         </div>
 
-        <div className="lesson-content" dangerouslySetInnerHTML={{ __html: lesson.content }} />
+        <LessonContent html={lesson.content} />
+
+        <LessonQuiz lessonSlug={lesson.slug} lessonId={lesson.id} />
 
         <div className="lesson-actions-row">
           <button className="button-primary" onClick={handleProgress} disabled={saving || isCompleted}>
@@ -141,8 +149,9 @@ export default function LessonPage() {
 
         <div className="playground-sidebar">
           <CodingPlayground
-            key={lesson.exercises?.[0]?.id ?? lesson.id}
+            key={`${lesson.id}-${playgroundLanguage}`}
             exercise={lesson.exercises?.[0] || { id: null, title: 'Practice', description: 'Write your code below', starter_code: '' }}
+            initialLanguage={playgroundLanguage}
             onSubmissionComplete={(submission) => {
               if (submission?.is_correct) {
                 alert('Great job! Exercise completed successfully!');

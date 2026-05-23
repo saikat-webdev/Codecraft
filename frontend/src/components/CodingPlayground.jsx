@@ -5,6 +5,7 @@ import {
   PLAYGROUND_LANGUAGES,
   DEFAULT_LANGUAGE_ID,
   getLanguageById,
+  getRunLanguageId,
 } from '../constants/playgroundLanguages';
 
 /**
@@ -62,7 +63,7 @@ export default function CodingPlayground({
     setSubmitFeedback('');
 
     try {
-      const response = await codingApi.runCode(code, languageId);
+      const response = await codingApi.runCode(code, getRunLanguageId(languageId));
       const data = response.data;
 
       if (data.success) {

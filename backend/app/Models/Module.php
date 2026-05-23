@@ -12,6 +12,8 @@ class Module extends Model
     protected $fillable = [
         'title',
         'slug',
+        'track',
+        'icon',
         'description',
         'order',
     ];

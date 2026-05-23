@@ -77,7 +77,16 @@ class AdminDashboardController extends BaseApiController
         $leaderboard = User::orderByDesc('xp')
             ->orderByDesc('level')
             ->limit(10)
-            ->get(['id', 'name', 'email', 'avatar_path', 'xp', 'level', 'streak_count']);
+            ->get()
+            ->map(fn (User $user) => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'avatar_url' => $user->avatar_url,
+                'xp' => $user->xp ?? 0,
+                'level' => $user->level ?? 1,
+                'streak_count' => $user->streak_count ?? 0,
+            ]);
 
         return $this->success($leaderboard, 'Leaderboard retrieved');
     }

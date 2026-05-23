@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthProvider';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 import BrandLogo from './components/BrandLogo';
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
@@ -10,6 +11,8 @@ import ModulePage from './pages/ModulePage';
 import Lessons from './pages/Lessons';
 import LessonPage from './pages/Lesson';
 import Playground from './pages/Playground';
+import Exams from './pages/Exams';
+import ExamTake from './pages/ExamTake';
 import Profile from './pages/Profile';
 import AdminSuddenTests from './pages/AdminSuddenTests';
 import AdminDashboard from './pages/AdminDashboard';
@@ -17,6 +20,7 @@ import AdminUsers from './pages/AdminUsers';
 import AdminSettings from './pages/AdminSettings';
 import AdminActivity from './pages/AdminActivity';
 import ProfileMenu from './components/ProfileMenu';
+import MobileNav from './components/MobileNav';
 import { useTheme } from './context/ThemeProvider';
 import './index.css';
 
@@ -53,10 +57,11 @@ function App() {
           <header className="site-header">
             <div className="container">
               <BrandLogo />
-              <nav>
+              <nav className="desktop-nav">
                 <Link to="/modules">Roadmap</Link>
                 <Link to="/lessons">Lessons</Link>
                 <Link to="/playground">Playground</Link>
+                <Link to="/exams">Exams</Link>
                 <Link to="/dashboard">Dashboard</Link>
                 <ProfileMenu />
                 <button
@@ -68,6 +73,7 @@ function App() {
                   <ThemeIcon theme={theme} />
                 </button>
               </nav>
+              <MobileNav theme={theme} onToggleTheme={toggleTheme} ThemeIcon={ThemeIcon} />
             </div>
           </header>
 
@@ -80,17 +86,17 @@ function App() {
                     <section className="hero-panel hero-grid fade-up">
                       <div className="hero-content">
                         <span className="eyebrow">Your coding lab</span>
-                        <h1>Learn Python with a live coding playground.</h1>
-                        <p>CodeCraft turns every lesson into hands-on practice — run real code in the browser, track progress, and build skills project by project.</p>
+                        <h1>Learn to code with a live playground.</h1>
+                        <p>CodeCraft turns every lesson into hands-on practice — Python, JavaScript, Java, C, React, exams, and progress tracking built for beginners.</p>
                         <div className="hero-actions">
                           <Link to="/register" className="button-primary">Join the lab</Link>
                           <Link to="/playground" className="button-secondary">Open playground</Link>
                         </div>
 
                         <div className="hero-features">
-                          <div className="feature-chip">Python Promise course</div>
-                          <div className="feature-chip">Fast, daily routines</div>
-                          <div className="feature-chip">Project-powered learning</div>
+                          <div className="feature-chip">5 language tracks</div>
+                          <div className="feature-chip">Practice exams</div>
+                          <div className="feature-chip">Free code runner</div>
                         </div>
                       </div>
 
@@ -225,14 +231,16 @@ function App() {
               <Route path="/lessons" element={<Lessons />} />
               <Route path="/lessons/:slug" element={<LessonPage />} />
               <Route path="/playground" element={<Playground />} />
+              <Route path="/exams" element={<Exams />} />
+              <Route path="/exams/:slug" element={<ProtectedRoute><ExamTake /></ProtectedRoute>} />
               <Route path="/ai" element={<Navigate to="/playground" replace />} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-              <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
-              <Route path="/admin/sudden-tests" element={<ProtectedRoute><AdminSuddenTests /></ProtectedRoute>} />
-              <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
-              <Route path="/admin/activity" element={<ProtectedRoute><AdminActivity /></ProtectedRoute>} />
+              <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+              <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
+              <Route path="/admin/sudden-tests" element={<AdminRoute><AdminSuddenTests /></AdminRoute>} />
+              <Route path="/admin/settings" element={<AdminRoute><AdminSettings /></AdminRoute>} />
+              <Route path="/admin/activity" element={<AdminRoute><AdminActivity /></AdminRoute>} />
             </Routes>
           </main>
         </div>
