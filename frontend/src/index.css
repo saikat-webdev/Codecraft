@@ -558,6 +558,107 @@ html.light .hero-content h1 {
   color: var(--accent);
 }
 
+.wide-video-panel {
+  display: grid;
+  gap: 1.25rem;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.wide-video-heading {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.wide-video-heading span {
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+}
+
+.wide-video-heading h2 {
+  margin: 0;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  line-height: 1.05;
+}
+
+.wide-video-heading p {
+  margin: 0;
+  color: var(--text-muted);
+  max-width: 66ch;
+}
+
+.wide-video-shell {
+  position: relative;
+  border-radius: calc(var(--radius-xl) + 6px);
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.18), rgba(14, 116, 144, 0.18), rgba(59, 130, 246, 0.18));
+  box-shadow: 0 24px 70px rgba(14, 116, 144, 0.2);
+  overflow: hidden;
+}
+
+.wide-video-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(37, 99, 235, 0.25) 20%, rgba(34, 211, 238, 0.55) 50%, rgba(14, 116, 144, 0.25) 80%, transparent 100%);
+  pointer-events: none;
+  filter: blur(14px);
+  transform: translateX(-100%);
+  animation: snake-border 4.5s linear infinite;
+}
+
+.wide-video-inner {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: rgba(9, 14, 29, 0.95);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.wide-video-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent 25%, transparent 75%, rgba(255,255,255,0.05));
+  mix-blend-mode: screen;
+  opacity: 0.55;
+}
+
+.wide-video-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.22), transparent 18%),
+              radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.16), transparent 18%);
+  filter: blur(12px);
+  animation: wide-video-glow 5s ease-in-out infinite;
+}
+
+.wide-video {
+  width: 100%;
+  height: auto;
+  display: block;
+  min-height: 320px;
+  max-height: 520px;
+  object-fit: contain;
+  background: #030710;
+}
+
+@keyframes wide-video-glow {
+  0%, 100% { transform: translateY(0); opacity: 0.85; }
+  50% { transform: translateY(-6px); opacity: 0.95; }
+}
+
+@keyframes snake-border {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 /* ─── Feature grids ─── */
 .feature-grid,
 .stats-grid,

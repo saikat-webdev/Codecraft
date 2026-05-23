@@ -42,6 +42,9 @@ function ThemeIcon({ theme }) {
 
 function App() {
   const { theme, toggleTheme } = useTheme();
+  const guideVideoUrl = import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/CodeCraft-guide.mp4`
+    : 'http://127.0.0.1:8000/CodeCraft-guide.mp4';
 
   return (
     <AuthProvider>
@@ -146,7 +149,31 @@ function App() {
                       </div>
                     </section>
 
-                    <section className="page-card code-stage fade-up delay-2">
+                    <section className="page-card wide-video-panel fade-up delay-2">
+                      <div className="wide-video-heading">
+                        <div>
+                          <span>CodeCraft quick tour</span>
+                          <h2>See the learning experience in motion</h2>
+                        </div>
+                        <p>Watch the full walkthrough without cropping or side cuts, inside a polished neon studio frame.</p>
+                      </div>
+                      <div className="wide-video-shell">
+                        <div className="wide-video-inner">
+                          <video
+                            className="wide-video"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            src={guideVideoUrl}
+                          >
+                            Your browser does not support this video.
+                          </video>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section className="page-card code-stage fade-up delay-3">
                       <div className="section-title">
                         <h2>Live coding flow</h2>
                         <p className="section-subtitle">Watch the learning path animate with color, motion, and a studio-style code preview.</p>
