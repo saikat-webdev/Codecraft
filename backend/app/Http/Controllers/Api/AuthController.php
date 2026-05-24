@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\AppSettingsService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -13,8 +14,16 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends BaseApiController
 {
-    public function register(RegisterRequest $request): JsonResponse
+    public function register(RegisterRequest $request, AppSettingsService $settings): JsonResponse
     {
+        if (! $settings->isRegistrationEnabled()) {
+            return $this->error('Registration is currently disabled.', 403);
+        }
+
+        if ($settings->isMaintenanceMode()) {
+            return $this->error('Registration is disabled while the platform is in maintenance mode.', 503);
+        }
+
         $data = $request->validated();
         $data['password'] = Hash::make($data['password']);
 

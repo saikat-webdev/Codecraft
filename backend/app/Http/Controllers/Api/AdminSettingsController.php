@@ -2,39 +2,31 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Services\AvatarStyleService;
+use App\Services\AppSettingsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\Rule;
 
 class AdminSettingsController extends BaseApiController
 {
-    public function index(): JsonResponse
+    public function index(AppSettingsService $settingsService): JsonResponse
     {
-        $settings = [
-            'branding' => [
-                'site_name' => config('app.name'),
-                'tagline' => 'Learn to code with live playgrounds',
-                'logo_url' => null,
-                'favicon_url' => null,
-            ],
-            'features' => [
-                'maintenance_mode' => false,
-                'registration_enabled' => true,
-                'sudden_tests_enabled' => true,
-                'leaderboard_enabled' => true,
-                'achievements_enabled' => true,
-            ],
-            'judge0' => [
-                'base_url' => config('services.judge0.base_url', env('JUDGE0_BASE_URL', 'https://ce.judge0.com')),
-                'api_key' => config('services.judge0.api_key') ? '***hidden***' : null,
-            ],
-        ];
+        $settings = $settingsService->getSettings();
+        $settings['judge0'] = array_merge([
+            'base_url' => config('services.judge0.base_url', env('JUDGE0_BASE_URL', 'https://ce.judge0.com')),
+            'api_key' => config('services.judge0.api_key') ? '***hidden***' : null,
+        ], Cache::get('judge0_settings', []));
 
         return $this->success($settings, 'Settings retrieved');
     }
 
     public function update(Request $request): JsonResponse
     {
+        $avatarService = app(AvatarStyleService::class);
+        $settingsService = app(AppSettingsService::class);
+
         $validated = $request->validate([
             'branding' => ['nullable', 'array'],
             'branding.site_name' => ['nullable', 'string', 'max:100'],
@@ -47,13 +39,17 @@ class AdminSettingsController extends BaseApiController
             'features.sudden_tests_enabled' => ['nullable', 'boolean'],
             'features.leaderboard_enabled' => ['nullable', 'boolean'],
             'features.achievements_enabled' => ['nullable', 'boolean'],
+            'avatars' => ['nullable', 'array'],
+            'avatars.mode' => ['nullable', 'string', Rule::in($avatarService->getModeOptions())],
         ]);
 
-        // In a real app, these would be stored in a settings table or config file
-        // For now, we'll just return success
-        Cache::put('admin_settings', $validated);
+        if (isset($validated['avatars']['mode'])) {
+            $avatarService->setMode($validated['avatars']['mode']);
+        }
 
-        return $this->success($validated, 'Settings updated');
+        $settingsService->saveSettings($validated);
+
+        return $this->success($settingsService->getSettings(), 'Settings updated');
     }
 
     public function updateJudge0(Request $request): JsonResponse

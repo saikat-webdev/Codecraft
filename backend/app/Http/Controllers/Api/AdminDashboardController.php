@@ -74,6 +74,12 @@ class AdminDashboardController extends BaseApiController
 
     public function leaderboard(): JsonResponse
     {
+        $settingsService = app(\App\Services\AppSettingsService::class);
+
+        if (! $settingsService->isLeaderboardEnabled()) {
+            return $this->success([], 'Leaderboard is currently disabled.');
+        }
+
         $leaderboard = User::orderByDesc('xp')
             ->orderByDesc('level')
             ->limit(10)

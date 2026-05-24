@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Lesson;
 use App\Models\Module;
 use App\Models\User;
+use Database\Seeders\SettingsSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;

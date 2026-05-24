@@ -40,6 +40,7 @@ export const adminApi = {
   getSettings: () => api.get('/admin/settings'),
   updateSettings: (data) => api.put('/admin/settings', data),
   updateJudge0Settings: (data) => api.put('/admin/settings/judge0', data),
+  updateAvatarMode: (data) => api.put('/admin/settings', data),
 
   // Activity Logs
   getActivityLogs: (params) => api.get('/admin/activity-logs', { params }),

@@ -1,28 +1,19 @@
 import { useEffect, useState } from 'react';
 import { profileApi } from '../services/profile';
 
-const avatarStyles = [
-  { id: 'avataaars', name: 'Classic Avatars', description: 'Classic avatar style' },
-  { id: 'notionists', name: 'Notionists', description: 'Minimalist style' },
-  { id: 'pixels', name: 'Pixels', description: 'Pixel art style' },
-  { id: 'fun-emoji', name: 'Fun Emoji', description: 'Emoji-style avatars' },
-  { id: 'bottts', name: 'Robots', description: 'Robot avatars' },
-  { id: 'lorelei', name: 'Lorelei', description: 'Artistic style' },
-  { id: 'pixel-art', name: 'Pixel Art', description: 'Retro pixel art' },
-  { id: 'open-peeps', name: '🦸 Hero Squad', description: 'Hand-drawn hero characters' },
-  { id: 'micah', name: '🥷 Ninja Warrior', description: 'Illustration style warriors' },
-  { id: 'identicon', name: '⚡ Power Icons', description: 'Geometric power symbols' },
-  { id: 'notionists-neon', name: '🌟 Neon Stars', description: 'Glowing neon avatars' },
-  { id: 'avataaars-neon', name: '💀 Dark Knight', description: 'Dark neon hero style' },
-  { id: 'big-ears', name: '🎭 Cartoon Crew', description: 'Fun cartoon characters' },
-  { id: 'big-ears-neon', name: '🔥 Fire Squad', description: 'Neon cartoon heroes' },
-  { id: 'croodles', name: '👾 Pixel Monsters', description: 'Cute monster avatars' },
-  { id: 'croodles-neutral', name: '🐉 Dragon Clan', description: 'Neutral monster style' },
-  { id: 'rings', name: '⭕ Magic Rings', description: 'Mystical ring avatars' },
+const fallbackStyles = [
+  { id: 'avataaars', name: 'Legendary Hero', description: 'Epic comic-style portrait', inspirations: ['legendary-team', 'comic-epic'] },
+  { id: 'adventurer', name: 'Classic Champion', description: 'Heroic cartoon portrait', inspirations: ['team-leader', 'classic-hero'] },
+  { id: 'big-ears', name: 'Masked Defender', description: 'Friendly vigilante with bold style', inspirations: ['dark-knight-inspired', 'masked-vigilante'] },
+  { id: 'bottts', name: 'Tech Guardian', description: 'Futuristic robot hero look', inspirations: ['cyber-warrior', 'tech-guardian'] },
+  { id: 'croodles', name: 'Alien Protector', description: 'Colorful fantasy character style', inspirations: ['cartoon-squad', 'playful-crew'] },
+  { id: 'pixel-art', name: 'Retro Avenger', description: 'Pixel-powered action avatar', inspirations: ['retro-arcade', 'pixel-vigilante'] },
+  { id: 'open-peeps', name: 'Team Hero', description: 'Hand-drawn squad member look', inspirations: ['ensemble', 'group-heroes'] },
 ];
 
 export default function AvatarStyleSelector({ userId, currentStyle, onSelect }) {
   const [selectedStyle, setSelectedStyle] = useState(currentStyle || 'avataaars');
+  const [styles, setStyles] = useState(fallbackStyles);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -43,8 +34,37 @@ export default function AvatarStyleSelector({ userId, currentStyle, onSelect }) 
     }
   };
 
+  useEffect(() => {
+    if (!currentStyle) {
+      return;
+    }
+
+    setSelectedStyle(currentStyle);
+  }, [currentStyle]);
+
+  useEffect(() => {
+    let canceled = false;
+
+    const loadStyles = async () => {
+      try {
+        const response = await profileApi.getAvatarStyles();
+        if (!canceled && response?.data?.data?.styles) {
+          setStyles(response.data.data.styles);
+        }
+      } catch (error) {
+        // Keep fallback styles when API call fails.
+      }
+    };
+
+    loadStyles();
+
+    return () => {
+      canceled = true;
+    };
+  }, []);
+
   const getAvatarUrl = (styleId) => {
-    const seed = encodeURIComponent(`${userId || 'user'}-${Date.now()}`);
+    const seed = encodeURIComponent(`${userId || 'user'}-${styleId}`);
     const bgColor = encodeURIComponent('b6e3f4,c0aede,d1d4f9');
     return `https://api.dicebear.com/7.x/${styleId}/svg?seed=${seed}&backgroundColor=${bgColor}`;
   };
@@ -55,7 +75,7 @@ export default function AvatarStyleSelector({ userId, currentStyle, onSelect }) 
         Choose Avatar Style
       </h3>
       <div className="avatar-styles-grid">
-        {avatarStyles.map((style) => (
+        {styles.map((style) => (
           <button
             key={style.id}
             className={`avatar-style-option ${selectedStyle === style.id ? 'selected' : ''}`}
@@ -74,6 +94,13 @@ export default function AvatarStyleSelector({ userId, currentStyle, onSelect }) 
             <div className="avatar-style-info">
               <strong>{style.name}</strong>
               <span className="avatar-style-desc">{style.description}</span>
+              {style.inspirations && style.inspirations.length > 0 && (
+                <small style={{ display: 'block', marginTop: '0.35rem', color: 'var(--muted)' }}>
+                  {style.inspirations.map((s, i) => (
+                    <span key={s}>{s}{i < style.inspirations.length - 1 ? ', ' : ''}</span>
+                  ))}
+                </small>
+              )}
             </div>
             {selectedStyle === style.id && (
               <span className="avatar-selected-badge">✓</span>

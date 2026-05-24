@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureAdmin::class,
+            'features' => \App\Http\Middleware\CheckFeatureFlags::class,
+            'registration' => \App\Http\Middleware\CheckRegistrationEnabled::class,
         ]);
 
         // API-only app: return 401 JSON instead of redirecting to a missing web login route

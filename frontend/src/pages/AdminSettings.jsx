@@ -23,6 +23,8 @@ export default function AdminSettings() {
     leaderboard_enabled: true,
     achievements_enabled: true,
   });
+  const [avatarMode, setAvatarMode] = useState('default');
+  const [avatarOptions, setAvatarOptions] = useState(['default', 'superb']);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -48,6 +50,10 @@ export default function AdminSettings() {
       }
       if (data.features) {
         setFeatures(data.features);
+      }
+      if (data.avatars) {
+        setAvatarMode(data.avatars.mode || 'default');
+        setAvatarOptions(data.avatars.available_modes || ['default', 'superb']);
       }
     } catch (err) {
       console.error('Failed to load settings:', err);
@@ -78,6 +84,9 @@ export default function AdminSettings() {
       await adminApi.updateSettings({
         branding,
         features,
+        avatars: {
+          mode: avatarMode,
+        },
       });
       setMessage('Settings saved successfully.');
     } catch (err) {
@@ -244,6 +253,27 @@ export default function AdminSettings() {
         </section>
 
         <section className="page-card fade-up delay-2">
+          <h2>Avatar Style Mode</h2>
+          <p className="text-muted" style={{ marginBottom: '1.5rem' }}>
+            Choose which avatar style set users may select from on their profile.
+          </p>
+          <label className="form-field">
+            <span>Active avatar mode</span>
+            <select
+              className="form-input"
+              value={avatarMode}
+              onChange={(e) => setAvatarMode(e.target.value)}
+            >
+              {avatarOptions.map((mode) => (
+                <option key={mode} value={mode}>
+                  {mode === 'superb' ? 'Superb avatars' : 'Default avatars'}
+                </option>
+              ))}
+            </select>
+          </label>
+        </section>
+
+        <section className="page-card fade-up delay-3">
           <h2>Judge0 Configuration</h2>
           <p className="text-muted" style={{ marginBottom: '1.5rem' }}>
             Configure the code execution engine settings.
