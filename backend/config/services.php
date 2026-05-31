@@ -52,4 +52,17 @@ return [
         'timeout' => (int) env('CODE_RUNNER_TIMEOUT', 8),
     ],
 
+    'n8n' => [
+        'webhook_url' => env('N8N_WEBHOOK_URL'),
+        'timeout' => (int) env('N8N_WEBHOOK_TIMEOUT', 90),
+    ],
+
+    /*
+    | Direct Gemini fallback when n8n returns empty or fails (same API key as Google AI Studio).
+    */
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-3.5-flash'),
+    ],
+
 ];

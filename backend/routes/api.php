@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AIController;
 use App\Http\Controllers\Api\AdminActivityController;
 use App\Http\Controllers\Api\AdminDashboardController;
 use App\Http\Controllers\Api\ExamController;
@@ -46,6 +47,8 @@ Route::middleware('features')->group(function () {
     Route::get('exercises/{exercise}', [ExerciseController::class, 'show']);
 
     Route::post('code/run', [CodeExecutionController::class, 'run']);
+
+    Route::post('ai/chat', [AIController::class, 'chat']);
 
     Route::get('sudden-tests/config', [SuddenTestController::class, 'config']);
 });

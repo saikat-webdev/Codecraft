@@ -1,0 +1,88 @@
+# CodeCraft — Docker Compose (Windows-friendly)
+#
+# Does NOT bind-mount project folders into containers (avoids WSL2 file-sync freezes).
+# Rebuild after code changes: docker compose up --build
+#
+# Lighter option (DB only, run PHP/Node on host): docker compose -f docker-compose.db-only.yml up -d
+
+name: codecraft
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: codecraft-postgres
+    restart: "no"
+    environment:
+      POSTGRES_DB: codecraft_db
+      POSTGRES_USER: codecraft
+      POSTGRES_PASSWORD: codecraft_secret
+    # Port not published by default — avoids conflict with local Postgres and reduces load.
+    # Uncomment only if you need pgAdmin/DBeaver from Windows:
+    # ports:
+    #   - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codecraft -d codecraft_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    mem_limit: 384m
+    cpus: "0.75"
+    shm_size: 128mb
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: codecraft-backend
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: CodeCraft
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_URL: http://localhost:8000
+      FRONTEND_URL: http://localhost:5173
+      LOG_CHANNEL: stderr
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: codecraft_db
+      DB_USERNAME: codecraft
+      DB_PASSWORD: codecraft_secret
+      SESSION_DRIVER: database
+      CACHE_STORE: database
+      QUEUE_CONNECTION: database
+      SANCTUM_STATEFUL_DOMAINS: localhost:5173,127.0.0.1:5173
+      JUDGE0_ENABLED: "true"
+      JUDGE0_BASE_URL: https://ce.judge0.com
+      # Skip heavy work when container restarts
+      SKIP_COMPOSER_INSTALL: "1"
+    mem_limit: 768m
+    cpus: "1.0"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: codecraft-frontend
+    restart: "no"
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:8000/api
+      # Polling hammers CPU on Docker Desktop + Windows — use native inotify inside Linux VM
+      CHOKIDAR_USEPOLLING: "false"
+    mem_limit: 768m
+    cpus: "1.0"
+
+volumes:
+  postgres_data:

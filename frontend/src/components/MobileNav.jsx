@@ -6,6 +6,7 @@ const NAV_LINKS = [
   { to: '/modules', label: 'Roadmap' },
   { to: '/lessons', label: 'Lessons' },
   { to: '/playground', label: 'Playground' },
+  { to: '/ai', label: 'AI Teacher' },
   { to: '/exams', label: 'Exams' },
   { to: '/dashboard', label: 'Dashboard' },
 ];

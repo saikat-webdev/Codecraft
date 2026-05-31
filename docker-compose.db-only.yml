@@ -1,0 +1,37 @@
+# PostgreSQL only — lightest Docker setup for Windows.
+# Run API and frontend on the host (XAMPP / php artisan serve / npm run dev).
+#
+#   docker compose -f docker-compose.db-only.yml up -d
+#
+# backend/.env:
+#   DB_HOST=127.0.0.1
+#   DB_PORT=5433
+#   DB_DATABASE=codecraft_db
+#   DB_USERNAME=codecraft
+#   DB_PASSWORD=codecraft_secret
+
+name: codecraft-db
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: codecraft-postgres
+    restart: "no"
+    environment:
+      POSTGRES_DB: codecraft_db
+      POSTGRES_USER: codecraft
+      POSTGRES_PASSWORD: codecraft_secret
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codecraft -d codecraft_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    mem_limit: 384m
+    cpus: "0.75"
+
+volumes:
+  postgres_data:

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthProvider';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
@@ -11,6 +11,7 @@ import ModulePage from './pages/ModulePage';
 import Lessons from './pages/Lessons';
 import LessonPage from './pages/Lesson';
 import Playground from './pages/Playground';
+import AIChat from './pages/AIChat';
 import Exams from './pages/Exams';
 import ExamTake from './pages/ExamTake';
 import Profile from './pages/Profile';
@@ -41,14 +42,24 @@ function ThemeIcon({ theme }) {
 }
 
 function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <AppLayout />
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
+
+function AppLayout() {
   const { theme, toggleTheme } = useTheme();
+  const { pathname } = useLocation();
+  const isAiChat = pathname === '/ai';
   const guideVideoUrl = import.meta.env.VITE_API_URL
     ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/CodeCraft-guide.mp4`
     : 'http://127.0.0.1:8000/CodeCraft-guide.mp4';
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
         <div className="app-frame">
           <div className="ambient-bg" aria-hidden="true">
             <div className="orb orb-1" />
@@ -64,6 +75,7 @@ function App() {
                 <Link to="/modules">Roadmap</Link>
                 <Link to="/lessons">Lessons</Link>
                 <Link to="/playground">Playground</Link>
+                <Link to="/ai">AI Teacher</Link>
                 <Link to="/exams">Exams</Link>
                 <Link to="/dashboard">Dashboard</Link>
                 <ProfileMenu />
@@ -80,7 +92,7 @@ function App() {
             </div>
           </header>
 
-          <main className="app-shell">
+          <main className={`app-shell${isAiChat ? ' app-shell--ai-chat' : ''}`}>
             <Routes>
               <Route
                 path="/"
@@ -258,9 +270,9 @@ function App() {
               <Route path="/lessons" element={<Lessons />} />
               <Route path="/lessons/:slug" element={<LessonPage />} />
               <Route path="/playground" element={<Playground />} />
+              <Route path="/ai" element={<AIChat />} />
               <Route path="/exams" element={<Exams />} />
               <Route path="/exams/:slug" element={<ProtectedRoute><ExamTake /></ProtectedRoute>} />
-              <Route path="/ai" element={<Navigate to="/playground" replace />} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
@@ -271,8 +283,6 @@ function App() {
             </Routes>
           </main>
         </div>
-      </BrowserRouter>
-    </AuthProvider>
   );
 }
 

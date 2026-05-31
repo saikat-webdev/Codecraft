@@ -1,0 +1,151 @@
+{
+  "name": "CodeCraft AI Teacher",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## CodeCraft AI Teacher\n\n**Change model:** open the **Gemini AI Teacher** node → **Model** dropdown (requires Google Gemini credential).\n\nDefault: `gemini-3.5-flash`\n\n**Production webhook:** activate workflow, use URL with `/webhook/ai-teacher` (not `/webhook-test/`).",
+        "height": 220,
+        "width": 380,
+        "color": 4
+      },
+      "id": "a1000001-0001-4000-8000-000000000099",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-200, 120]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ai-teacher",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "a1000001-0001-4000-8000-000000000001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 300],
+      "webhookId": "codecraft-ai-teacher"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "msg",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "uid",
+              "name": "user_id",
+              "value": "={{ $json.body.user_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1000001-0001-4000-8000-000000000002",
+      "name": "Extract Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3.5-flash",
+          "cachedResultName": "models/gemini-3.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are CodeCraft AI Instructor — a friendly coding teacher for beginners.\n\nTOPIC RULE (very important):\n- If the user message is NOT about programming, software, coding, debugging, or learning to code, reply with EXACTLY this one sentence and nothing else:\nI am CodeCraft AI Instructor and I can only help with programming and software development learning.\n- Otherwise teach in simple steps with short examples. Be warm and encouraging.\n\nALLOW: Python/JS/Java/C/React questions, how to learn code, greetings to a coding teacher, debugging help.\nBLOCK: politics, medical, legal, sports, recipes, unrelated homework.\n\nStudent user_id: {{ $json.user_id }}\n\nStudent message:\n{{ $json.message }}"
+            }
+          ]
+        },
+        "simplify": true,
+        "jsonOutput": false,
+        "options": {
+          "temperature": 0.7,
+          "maxOutputTokens": 1024
+        }
+      },
+      "id": "a1000001-0001-4000-8000-000000000006",
+      "name": "Gemini AI Teacher",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [520, 300],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fmt-reply",
+              "name": "reply",
+              "value": "={{ $json.text ?? $json.output ?? $json.response ?? ($json.error && $json.error.message ? 'AI error: ' + $json.error.message : 'Sorry, the AI could not generate a reply. Open Gemini AI Teacher → pick a model and verify your API key.') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1000001-0001-4000-8000-000000000007",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"success\": true, \"reply\": $json.reply } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "a1000001-0001-4000-8000-000000000008",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1040, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Extract Payload", "type": "main", "index": 0 }]]
+    },
+    "Extract Payload": {
+      "main": [[{ "node": "Gemini AI Teacher", "type": "main", "index": 0 }]]
+    },
+    "Gemini AI Teacher": {
+      "main": [[{ "node": "Format Response", "type": "main", "index": 0 }]]
+    },
+    "Format Response": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "settings": { "executionOrder": "v1" },
+  "staticData": null,
+  "tags": [{ "name": "CodeCraft" }],
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "codecraft-ai-teacher"
+  }
+}
