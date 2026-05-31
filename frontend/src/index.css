@@ -3459,6 +3459,41 @@ main.app-shell:has(.ai-chat-page) {
   padding: 0.6rem 0.75rem;
 }
 
+.ai-chat-signin-hint {
+  flex-shrink: 0;
+  margin: 0;
+  font-size: 0.85rem;
+  padding: 0.6rem 0.75rem;
+}
+
+.ai-chat-clear-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ai-chat-clear-link:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.ai-chat-clear-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ai-chat-history-loading {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
 .ai-chat-panel {
   flex: 1;
   display: flex;

@@ -12,8 +12,6 @@ class N8nAiInstructorService
     {
         $url = (string) config('services.n8n.webhook_url');
 
-        // Test URLs only work while "Listen for test event" is open in the n8n editor.
-        // Laravel calls n8n in the background — production URL + active workflow is required.
         if ($url === '' || str_contains($url, '/webhook-test/')) {
             return false;
         }
@@ -21,7 +19,7 @@ class N8nAiInstructorService
         return true;
     }
 
-    public function chat(string $message, int $userId): ?array
+    public function chat(string $message, int $userId, ?string $knowledgeContext = null): ?array
     {
         $webhookUrl = config('services.n8n.webhook_url');
 
@@ -29,13 +27,20 @@ class N8nAiInstructorService
             return null;
         }
 
+        $payload = [
+            'message' => $message,
+            'user_id' => $userId,
+        ];
+
+        if ($knowledgeContext !== null && trim($knowledgeContext) !== '') {
+            $maxChars = (int) config('services.n8n.max_knowledge_context_chars', 10000);
+            $payload['knowledge_context'] = mb_substr($knowledgeContext, 0, $maxChars);
+        }
+
         try {
             $response = Http::timeout((int) config('services.n8n.timeout', 90))
                 ->acceptJson()
-                ->post($webhookUrl, [
-                    'message' => $message,
-                    'user_id' => $userId,
-                ]);
+                ->post($webhookUrl, $payload);
 
             return $this->parseResponse($response, $webhookUrl);
         } catch (\Throwable $e) {
@@ -72,6 +77,15 @@ class N8nAiInstructorService
             return null;
         }
 
+        if ($this->isN8nGeminiFailureMessage($reply)) {
+            Log::warning('n8n Gemini node failed (workflow returned placeholder reply)', [
+                'url' => $webhookUrl,
+                'reply_preview' => mb_substr($reply, 0, 200),
+            ]);
+
+            return null;
+        }
+
         return [
             'success' => true,
             'reply' => $reply,
@@ -95,5 +109,13 @@ class N8nAiInstructorService
         }
 
         return null;
+    }
+
+    protected function isN8nGeminiFailureMessage(string $reply): bool
+    {
+        return str_contains($reply, 'Sorry, the AI could not generate a reply')
+            || str_starts_with($reply, 'AI error:')
+            || str_starts_with($reply, 'Gemini API:')
+            || str_starts_with($reply, 'Missing "message"');
     }
 }

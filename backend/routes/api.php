@@ -48,8 +48,6 @@ Route::middleware('features')->group(function () {
 
     Route::post('code/run', [CodeExecutionController::class, 'run']);
 
-    Route::post('ai/chat', [AIController::class, 'chat']);
-
     Route::get('sudden-tests/config', [SuddenTestController::class, 'config']);
 });
 
@@ -82,6 +80,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('exercises/{exercise}/hints', [CodeEvaluationController::class, 'hints']);
         Route::get('submissions/history', [CodeEvaluationController::class, 'history']);
         Route::post('exercises', [ExerciseController::class, 'store']);
+
+        Route::get('ai/history', [AIController::class, 'history']);
+        Route::post('ai/chat', [AIController::class, 'chat']);
+        Route::delete('ai/history', [AIController::class, 'clearHistory']);
 
         Route::middleware('admin')->prefix('admin')->group(function () {
             // Dashboard

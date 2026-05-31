@@ -5,22 +5,24 @@
 | Layer | Role |
 |-------|------|
 | **React** (`/ai`) | Chat UI → `POST /api/ai/chat` |
-| **Laravel** | Validates input, forwards to n8n, returns `{ success, reply }` |
-| **n8n** | Classifies topic → Gemini teacher or block message |
+| **Laravel** | Validates input, **RAG search (pgvector)**, forwards to n8n/Gemini |
+| **n8n** | Gemini teacher (uses `knowledge_context` from Laravel) |
+
+**Site knowledge (modules/lessons):** see **[KNOWLEDGE_RAG.md](KNOWLEDGE_RAG.md)** — run `php artisan knowledge:embed` after seeding.
 
 ---
 
-## 1. n8n workflow
+## 1. n8n workflow (v2 — recommended)
 
-1. Open your n8n instance (cloud or self-hosted).
-2. **Workflows → Import from file** → choose `n8n/codecraft-ai-teacher.workflow.json`.
-3. Create **Google Gemini API** credentials in n8n (Google AI Studio API key).
-4. Open both **Gemini Classifier** and **Gemini AI Teacher** nodes → assign your credential (replace `REPLACE_WITH_YOUR_CREDENTIAL_ID` if import did not map it).
-5. Open the **Webhook** node and copy the **Production URL** (not Test URL), e.g.  
-   `https://your-n8n.app/webhook/ai-teacher`  
-   ⚠️ Do **not** put `/webhook-test/` in `backend/.env`. The test URL is only for manual tests in the n8n UI while **Listen for test event** is on. Laravel calls n8n in the background — it needs the **Production** URL.
-6. On both **Gemini Classifier** and **Gemini AI Teacher** HTTP nodes, assign **Google Gemini(PaLM) API** credentials (same API key as [Google AI Studio](https://aistudio.google.com/apikey)).
-7. **Activate** the workflow (toggle ON). Until it is active, production webhooks return **404**.
+Full steps: **[N8N_WORKFLOW_V2.md](N8N_WORKFLOW_V2.md)**
+
+1. **Import** `n8n/codecraft-ai-teacher.workflow.json` (delete/deactivate any old copy first).
+2. Create **Header Auth** credential: header name `x-goog-api-key`, value = [Google AI Studio](https://aistudio.google.com/apikey) key.
+3. **Call Gemini API** node → select that credential → **Save**.
+4. **Published** → OFF → ON. Copy **Production URL** (`/webhook/ai-teacher`, not `/webhook-test/`).
+5. Set `N8N_WEBHOOK_URL` in `backend/.env` and `php artisan config:clear`.
+
+The v2 workflow calls Gemini’s REST API directly (same as Laravel fallback) — no LangChain Gemini node.
 
 ### Why the app errors but n8n shows the webhook data
 

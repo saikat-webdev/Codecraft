@@ -52,17 +52,37 @@ return [
         'timeout' => (int) env('CODE_RUNNER_TIMEOUT', 8),
     ],
 
+    /*
+    | AI Instructor: Gemini direct is default (reliable). Set AI_PREFER_N8N=true to try n8n first.
+    */
+    'ai' => [
+        'prefer_n8n' => filter_var(env('AI_PREFER_N8N', false), FILTER_VALIDATE_BOOLEAN),
+    ],
+
     'n8n' => [
         'webhook_url' => env('N8N_WEBHOOK_URL'),
         'timeout' => (int) env('N8N_WEBHOOK_TIMEOUT', 90),
+        'max_knowledge_context_chars' => (int) env('N8N_MAX_KNOWLEDGE_CONTEXT_CHARS', 10000),
     ],
 
     /*
-    | Direct Gemini fallback when n8n returns empty or fails (same API key as Google AI Studio).
+    | Direct Gemini (primary). Same key as Google AI Studio.
     */
     'gemini' => [
         'api_key' => env('GEMINI_API_KEY'),
-        'model' => env('GEMINI_MODEL', 'gemini-3.5-flash'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.0-flash'),
+        'model_fallbacks' => env('GEMINI_MODEL_FALLBACKS', 'gemini-2.0-flash,gemini-1.5-flash'),
+        'embedding_model' => env('GEMINI_EMBEDDING_MODEL', 'gemini-embedding-001'),
+        'embedding_dimensions' => (int) env('GEMINI_EMBEDDING_DIMENSIONS', 768),
+    ],
+
+    'knowledge' => [
+        'enabled' => env('KNOWLEDGE_RAG_ENABLED', true),
+        'top_k' => (int) env('KNOWLEDGE_TOP_K', 5),
+        'min_similarity' => (float) env('KNOWLEDGE_MIN_SIMILARITY', 0.35),
+        'chunk_size' => (int) env('KNOWLEDGE_CHUNK_SIZE', 1500),
+        'chunk_overlap' => (int) env('KNOWLEDGE_CHUNK_OVERLAP', 200),
+        'embed_delay_ms' => (int) env('KNOWLEDGE_EMBED_DELAY_MS', 150),
     ],
 
 ];

@@ -3,16 +3,16 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## CodeCraft AI Teacher\n\n**Change model:** open the **Gemini AI Teacher** node → **Model** dropdown (requires Google Gemini credential).\n\nDefault: `gemini-3.5-flash`\n\n**Production webhook:** activate workflow, use URL with `/webhook/ai-teacher` (not `/webhook-test/`).",
-        "height": 220,
-        "width": 380,
+        "content": "## CodeCraft AI Teacher v2.1 (linear)\n\n1. Credential: **Header Auth** → name `x-goog-api-key` = Google AI Studio key\n2. **Call Gemini API** → select credential\n3. Save → **Published OFF → ON**\n\nEvery run ends at **Respond to Webhook** (no branches).\n\nApp: `…/webhook/ai-teacher`",
+        "height": 240,
+        "width": 400,
         "color": 4
       },
-      "id": "a1000001-0001-4000-8000-000000000099",
-      "name": "Sticky Note",
+      "id": "cc-note-0001-4000-8000-000000000001",
+      "name": "Setup Guide",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [-200, 120]
+      "position": [-280, 120]
     },
     {
       "parameters": {
@@ -21,131 +21,102 @@
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "a1000001-0001-4000-8000-000000000001",
+      "id": "cc-webhook-0001-4000-8000-000000000002",
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [0, 300],
-      "webhookId": "codecraft-ai-teacher"
+      "position": [0, 320],
+      "webhookId": "codecraft-ai-teacher-v2"
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "msg",
-              "name": "message",
-              "value": "={{ $json.body.message }}",
-              "type": "string"
-            },
-            {
-              "id": "uid",
-              "name": "user_id",
-              "value": "={{ $json.body.user_id }}",
-              "type": "number"
-            }
-          ]
-        },
-        "options": {}
+        "jsCode": "const input = $input.first().json;\nconst body = input.body ?? input;\n\nconst message = String(body.message ?? '').trim();\nconst userId = Number(body.user_id ?? 0) || 0;\nlet knowledge = String(body.knowledge_context ?? '');\nif (knowledge.length > 10000) {\n  knowledge = knowledge.slice(0, 10000);\n}\n\nconst knowledgeBlock = knowledge\n  ? `\\n\\n---\\n${knowledge}\\n---\\n`\n  : '';\n\nconst studentLine = message || '(empty message)';\n\nconst prompt = `You are CodeCraft AI Instructor — a friendly coding teacher for beginners.\n\nTOPIC RULE (very important):\n- If the user message is NOT about programming, software, coding, debugging, or learning to code, reply with EXACTLY this one sentence and nothing else:\nI am CodeCraft AI Instructor and I can only help with programming and software development learning.\n- Otherwise teach in simple steps with short examples. Be warm and encouraging.\n\nALLOW: Python, JavaScript, Java, C, React, debugging, learning to code, and CodeCraft tracks/modules/lessons when context is below.\nBLOCK: politics, medical, legal, sports, recipes, unrelated homework.\n${knowledgeBlock}\nStudent user_id: ${userId}\n\nStudent message:\n${studentLine}`;\n\nreturn [{\n  json: {\n    message,\n    user_id: userId,\n    prompt,\n    model: 'gemini-2.0-flash'\n  }\n}];"
       },
-      "id": "a1000001-0001-4000-8000-000000000002",
-      "name": "Extract Payload",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [260, 300]
+      "id": "cc-prepare-0001-4000-8000-000000000003",
+      "name": "Prepare Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [260, 320]
     },
     {
       "parameters": {
-        "resource": "text",
-        "operation": "message",
-        "modelId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "models/gemini-3.5-flash",
-          "cachedResultName": "models/gemini-3.5-flash"
-        },
-        "messages": {
-          "values": [
-            {
-              "content": "=You are CodeCraft AI Instructor — a friendly coding teacher for beginners.\n\nTOPIC RULE (very important):\n- If the user message is NOT about programming, software, coding, debugging, or learning to code, reply with EXACTLY this one sentence and nothing else:\nI am CodeCraft AI Instructor and I can only help with programming and software development learning.\n- Otherwise teach in simple steps with short examples. Be warm and encouraging.\n\nALLOW: Python/JS/Java/C/React questions, how to learn code, greetings to a coding teacher, debugging help.\nBLOCK: politics, medical, legal, sports, recipes, unrelated homework.\n\nStudent user_id: {{ $json.user_id }}\n\nStudent message:\n{{ $json.message }}"
-            }
-          ]
-        },
-        "simplify": true,
-        "jsonOutput": false,
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/{{ $json.model }}:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ contents: [{ parts: [{ text: $json.prompt }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 1024 } }) }}",
         "options": {
-          "temperature": 0.7,
-          "maxOutputTokens": 1024
+          "timeout": 90000,
+          "response": {
+            "response": {
+              "fullResponse": false,
+              "neverError": true
+            }
+          }
         }
       },
-      "id": "a1000001-0001-4000-8000-000000000006",
-      "name": "Gemini AI Teacher",
-      "type": "@n8n/n8n-nodes-langchain.googleGemini",
-      "typeVersion": 1.2,
-      "position": [520, 300],
+      "id": "cc-http-00001-4000-8000-000000000005",
+      "name": "Call Gemini API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [520, 320],
       "credentials": {
-        "googlePalmApi": {
-          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
-          "name": "Google Gemini(PaLM) Api account"
+        "httpHeaderAuth": {
+          "id": "REPLACE_WITH_HEADER_AUTH_CREDENTIAL_ID",
+          "name": "Google Gemini API Key (x-goog-api-key)"
         }
       },
       "onError": "continueRegularOutput"
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "fmt-reply",
-              "name": "reply",
-              "value": "={{ $json.text ?? $json.output ?? $json.response ?? ($json.error && $json.error.message ? 'AI error: ' + $json.error.message : 'Sorry, the AI could not generate a reply. Open Gemini AI Teacher → pick a model and verify your API key.') }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
+        "jsCode": "const gemini = $input.first().json;\n\nconst text = gemini?.candidates?.[0]?.content?.parts?.[0]?.text;\nif (typeof text === 'string' && text.trim()) {\n  return [{ json: { success: true, reply: text.trim() } }];\n}\n\nconst apiError = gemini?.error?.message || gemini?.error?.status;\nconst reply = apiError\n  ? `Gemini API error: ${apiError}`\n  : 'Gemini returned no text. Check Header Auth credential (x-goog-api-key) on Call Gemini API node.';\n\nreturn [{ json: { success: false, reply } }];"
       },
-      "id": "a1000001-0001-4000-8000-000000000007",
-      "name": "Format Response",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [780, 300]
+      "id": "cc-parse-00001-4000-8000-000000000006",
+      "name": "Parse Gemini Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [780, 320]
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { \"success\": true, \"reply\": $json.reply } }}",
+        "responseBody": "={{ { success: $json.success !== false, reply: $json.reply || '' } }}",
         "options": {
           "responseCode": 200
         }
       },
-      "id": "a1000001-0001-4000-8000-000000000008",
+      "id": "cc-respond-0001-4000-8000-000000000009",
       "name": "Respond to Webhook",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1040, 300]
+      "position": [1040, 320]
     }
   ],
   "connections": {
     "Webhook": {
-      "main": [[{ "node": "Extract Payload", "type": "main", "index": 0 }]]
+      "main": [[{ "node": "Prepare Prompt", "type": "main", "index": 0 }]]
     },
-    "Extract Payload": {
-      "main": [[{ "node": "Gemini AI Teacher", "type": "main", "index": 0 }]]
+    "Prepare Prompt": {
+      "main": [[{ "node": "Call Gemini API", "type": "main", "index": 0 }]]
     },
-    "Gemini AI Teacher": {
-      "main": [[{ "node": "Format Response", "type": "main", "index": 0 }]]
+    "Call Gemini API": {
+      "main": [[{ "node": "Parse Gemini Reply", "type": "main", "index": 0 }]]
     },
-    "Format Response": {
+    "Parse Gemini Reply": {
       "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
     }
   },
   "pinData": {},
-  "settings": { "executionOrder": "v1" },
+  "settings": {
+    "executionOrder": "v1"
+  },
   "staticData": null,
   "tags": [{ "name": "CodeCraft" }],
   "meta": {
     "templateCredsSetupCompleted": false,
-    "instanceId": "codecraft-ai-teacher"
+    "instanceId": "codecraft-ai-teacher-v2"
   }
 }

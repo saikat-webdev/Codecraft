@@ -70,6 +70,11 @@ class User extends Authenticatable
         return $this->hasMany(SuddenTestAttempt::class);
     }
 
+    public function aiConversations(): HasMany
+    {
+        return $this->hasMany(AiConversation::class);
+    }
+
     public function getAvatarUrlAttribute(): ?string
     {
         if ($this->avatar_path) {
