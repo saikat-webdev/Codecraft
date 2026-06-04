@@ -77,8 +77,8 @@ class N8nAiInstructorService
             return null;
         }
 
-        if ($this->isN8nGeminiFailureMessage($reply)) {
-            Log::warning('n8n Gemini node failed (workflow returned placeholder reply)', [
+        if ($this->isN8nProviderFailureMessage($reply)) {
+            Log::warning('n8n provider node failed (workflow returned placeholder reply)', [
                 'url' => $webhookUrl,
                 'reply_preview' => mb_substr($reply, 0, 200),
             ]);
@@ -111,11 +111,11 @@ class N8nAiInstructorService
         return null;
     }
 
-    protected function isN8nGeminiFailureMessage(string $reply): bool
+    protected function isN8nProviderFailureMessage(string $reply): bool
     {
         return str_contains($reply, 'Sorry, the AI could not generate a reply')
             || str_starts_with($reply, 'AI error:')
-            || str_starts_with($reply, 'Gemini API:')
+            || str_starts_with($reply, 'GROQ API:')
             || str_starts_with($reply, 'Missing "message"');
     }
 }
